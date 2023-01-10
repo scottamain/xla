@@ -34,3 +34,14 @@
   left: 0;
 }
 
+.md-typeset table td {
+  line-height: 1rem;
+}
+
+.md-typeset table th {
+  background-color: var(--md-code-bg-color);
+}
+
+.md-typeset table td * {
+  word-break: normal;
+}
