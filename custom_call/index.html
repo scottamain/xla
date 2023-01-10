@@ -1,0 +1,988 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../developing_new_backend/">
+      
+      
+        <link rel="next" href="../aliasing/">
+      
+      <link rel="icon" href="../website/assets/favicon.ico">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.2">
+    
+    
+      
+        <title>Custom calls - XLA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.f56500e0.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto:300,300i,400,400i,700,700i%7CNoto+Sans+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Noto";--md-code-font:"Noto Sans Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../website/stylesheets/openxla.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#xla-custom-calls" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="XLA" class="md-header__button md-logo" aria-label="XLA" data-md-component="logo">
+      
+  <img src="../website/assets/openxla-logo-lockup-white.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            XLA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Custom calls
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18V6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-2.69L23.31 12 20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69Z"/></svg>
+            </label>
+          
+        
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18V6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-2.69L23.31 12 20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69Z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/openxla/xla" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    openxla/xla
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href=".." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../architecture/" class="md-tabs__link md-tabs__link--active">
+        Guides
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../code_reviews_guide/" class="md-tabs__link">
+        Community
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="XLA" class="md-nav__button md-logo" aria-label="XLA" data-md-component="logo">
+      
+  <img src="../website/assets/openxla-logo-lockup-white.svg" alt="logo">
+
+    </a>
+    XLA
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/openxla/xla" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    openxla/xla
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Guides
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Guides" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Guides
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        XLA architecture
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing_new_backend/" class="md-nav__link">
+        Develop a new backend
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Custom calls
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Custom calls
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#custom-call-on-cpu" class="md-nav__link">
+    Custom-call on CPU
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-call-on-gpu" class="md-nav__link">
+    Custom-call on GPU
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signalling-an-error" class="md-nav__link">
+    Signalling an error
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#passing-tuples-to-custom-calls" class="md-nav__link">
+    Passing tuples to custom-calls
+  </a>
+  
+    <nav class="md-nav" aria-label="Passing tuples to custom-calls">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tuple-outputs-as-temp-buffers" class="md-nav__link">
+    Tuple outputs as temp buffers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tuples-in-cpu-custom-calls" class="md-nav__link">
+    Tuples in CPU custom-calls
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tuples-in-gpu-custom-calls" class="md-nav__link">
+    Tuples in GPU custom-calls
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../aliasing/" class="md-nav__link">
+        Aliasing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../broadcasting/" class="md-nav__link">
+        Broadcasting
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shapes/" class="md-nav__link">
+        Shapes and layout
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tiled_layout/" class="md-nav__link">
+        Tiled layout
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operation_semantics/" class="md-nav__link">
+        Operation semantics
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Community
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Community" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Community
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code_reviews_guide/" class="md-nav__link">
+        Code reviews
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#custom-call-on-cpu" class="md-nav__link">
+    Custom-call on CPU
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-call-on-gpu" class="md-nav__link">
+    Custom-call on GPU
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signalling-an-error" class="md-nav__link">
+    Signalling an error
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#passing-tuples-to-custom-calls" class="md-nav__link">
+    Passing tuples to custom-calls
+  </a>
+  
+    <nav class="md-nav" aria-label="Passing tuples to custom-calls">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tuple-outputs-as-temp-buffers" class="md-nav__link">
+    Tuple outputs as temp buffers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tuples-in-cpu-custom-calls" class="md-nav__link">
+    Tuples in CPU custom-calls
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tuples-in-gpu-custom-calls" class="md-nav__link">
+    Tuples in GPU custom-calls
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/openxla/xla/edit/main/docs/custom_call.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
+    </a>
+  
+  
+
+
+
+<h1 id="xla-custom-calls">XLA custom calls<a class="headerlink" href="#xla-custom-calls" title="Permanent link">link</a></h1>
+<p>This document describes how to write and use XLA "custom calls". Custom calls
+let you invoke code written in a programming language like C++ or CUDA from an
+XLA program.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Custom calls are a low-level power-user feature. It is easy to break your
+program in difficult-to-debug (and even difficult-to-notice) ways using
+custom-calls. You shouldn't use custom calls unless you're prepared to debug
+XLA yourself when something goes wrong, and you should expect relatively
+less assistance from XLA developers if you run into trouble.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The custom-call API/ABI is not currently stable. We don't intend to
+change it capriciously, but it may change. Some possible future changes are
+described below.</p>
+</div>
+<h2 id="custom-call-on-cpu">Custom-call on CPU<a class="headerlink" href="#custom-call-on-cpu" title="Permanent link">link</a></h2>
+<p>You can create an HLO instruction which represents a custom-call via XLA's
+client API. For example, the following code uses a custom-call to compute <code>A[i]
+= B[i % 128]+ C[i]</code> on the CPU. (Of course you could -- and should! -- do this
+with regular HLO.)</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xla/client/xla_builder.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xla/service/custom_call_target_registry.h&quot;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">do_it</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">xla</span><span class="o">::</span><span class="n">XlaBuilder</span><span class="w"> </span><span class="n">b</span><span class="p">(</span><span class="s">&quot;do_it&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">xla</span><span class="o">::</span><span class="n">XlaOp</span><span class="w"> </span><span class="n">param0</span><span class="w"> </span><span class="o">=</span>
+<span class="w">      </span><span class="n">xla</span><span class="o">::</span><span class="n">Parameter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">xla</span><span class="o">::</span><span class="n">ShapeUtil</span><span class="o">::</span><span class="n">MakeShape</span><span class="p">(</span><span class="n">xla</span><span class="o">::</span><span class="n">F32</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">128</span><span class="p">}),</span><span class="w"> </span><span class="s">&quot;p0&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">xla</span><span class="o">::</span><span class="n">XlaOp</span><span class="w"> </span><span class="n">param1</span><span class="w"> </span><span class="o">=</span>
+<span class="w">      </span><span class="n">xla</span><span class="o">::</span><span class="n">Parameter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">xla</span><span class="o">::</span><span class="n">ShapeUtil</span><span class="o">::</span><span class="n">MakeShape</span><span class="p">(</span><span class="n">xla</span><span class="o">::</span><span class="n">F32</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">2048</span><span class="p">}),</span><span class="w"> </span><span class="s">&quot;p1&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">xla</span><span class="o">::</span><span class="n">XlaOp</span><span class="w"> </span><span class="n">custom_call</span><span class="w"> </span><span class="o">=</span>
+<span class="w">      </span><span class="n">xla</span><span class="o">::</span><span class="n">CustomCall</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;do_custom_call&quot;</span><span class="p">,</span><span class="w"> </span><span class="cm">/*operands=*/</span><span class="p">{</span><span class="n">param0</span><span class="p">,</span><span class="w"> </span><span class="n">param1</span><span class="p">},</span>
+<span class="w">                      </span><span class="cm">/*shape=*/</span><span class="n">xla</span><span class="o">::</span><span class="n">ShapeUtil</span><span class="o">::</span><span class="n">MakeShape</span><span class="p">(</span><span class="n">xla</span><span class="o">::</span><span class="n">F32</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">2048</span><span class="p">}));</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">do_custom_call</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="o">**</span><span class="w"> </span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">out_buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">out</span><span class="p">);</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">in0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">in</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">in1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">in</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2048</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">out_buf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">in0</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">128</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">in1</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="n">XLA_REGISTER_CUSTOM_CALL_TARGET</span><span class="p">(</span><span class="n">do_custom_call</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Host&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p>Notice that the function <code>do_custom_call</code> needs to know the dimensions of the
+buffers it operates over. In this example we hardcode the sizes 128 and 2048. If
+you don't want to do this, you can pass the dimensions in as parameters to the
+call.</p>
+<h2 id="custom-call-on-gpu">Custom-call on GPU<a class="headerlink" href="#custom-call-on-gpu" title="Permanent link">link</a></h2>
+<p>The GPU custom call framework is somewhat different than that on the CPU. Here
+is a CUDA example that does the same <code>A[i] = B[i % 128] + C[i]</code> computation as
+the CPU code above.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">do_it</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* same implementation as above */</span><span class="w"> </span><span class="p">}</span>
+
+<span class="n">__global__</span><span class="w"> </span><span class="nf">custom_call_kernel</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">in0</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">in1</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">blockDim</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="w">  </span><span class="n">out</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">in0</span><span class="p">[</span><span class="n">idx</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">128</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">in1</span><span class="p">[</span><span class="n">idx</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">do_custom_call</span><span class="p">(</span><span class="n">CUstream</span><span class="w"> </span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="o">**</span><span class="w"> </span><span class="n">buffers</span><span class="p">,</span>
+<span class="w">                    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">opaque</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">opaque_len</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">in0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">buffers</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">in1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">buffers</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+<span class="w">  </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">buffers</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">block_dim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">64</span><span class="p">;</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">grid_dim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2048</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">block_dim</span><span class="p">;</span>
+<span class="w">  </span><span class="n">custom_call_kernel</span><span class="o">&lt;&lt;&lt;</span><span class="n">grid_dim</span><span class="p">,</span><span class="w"> </span><span class="n">block_dim</span><span class="p">,</span>
+<span class="w">                       </span><span class="cm">/*dynamic_shared_mem_bytes=*/</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="o">&gt;&gt;&gt;</span><span class="p">(</span><span class="n">in0</span><span class="p">,</span><span class="w"> </span><span class="n">in1</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">XLA_REGISTER_CUSTOM_CALL_TARGET</span><span class="p">(</span><span class="n">do_custom_call</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;CUDA&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p>Notice first that the GPU custom call function <em>is still a function executed on
+the CPU</em>. Our <code>do_custom_call</code> CPU function is responsible for enqueueing work
+on the GPU. Here it launches a CUDA kernel, but it could also do something else,
+like call cublas.</p>
+<p><code>buffers</code> is an array of pointers which lives on the host, and each element it
+contains points to device (i.e. GPU) memory. The parameters come first, followed
+by the output value. This is notably different from the CPU calling convention,
+which has two params, <code>ins</code> and <code>out</code>. The main reason we diverge is to make it
+possible to handle tuple-shaped inputs/outputs efficiently; see the section
+below.</p>
+<p>As in the CPU example, we've hardcoded the input and output buffer sizes into
+our custom call. However unlike in the CPU case, passing the buffer sizes in as
+operands to the custom call would not work well. Usually we need the buffer
+sizes available to us on the CPU; e.g. when launching a kernel, we need to know
+the block/grid dimensions to use. But if we were to pass the buffer sizes as
+operands to our custom call, their values would live in GPU memory. We'd then
+have to do an expensive synchronous device-to-host memcpy at the start of our
+operation just to read the sizes.</p>
+<p>To let you work around this, we provide the <code>opaque</code> parameter. You can set this
+to an arbitrary string of bytes when you create the custom call:</p>
+<div class="highlight"><pre><span></span><code><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">opaque</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;...&quot;</span><span class="p">;</span>
+<span class="n">xla</span><span class="o">::</span><span class="n">CustomCall</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;do_custom_call&quot;</span><span class="p">,</span><span class="w"> </span><span class="cm">/*operands=*/</span><span class="p">{</span><span class="n">param0</span><span class="p">,</span><span class="w"> </span><span class="n">param1</span><span class="p">},</span>
+<span class="w">                </span><span class="cm">/*output_shape=*/</span><span class="n">xla</span><span class="o">::</span><span class="n">ShapeUtil</span><span class="o">::</span><span class="n">MakeShape</span><span class="p">(</span><span class="n">xla</span><span class="o">::</span><span class="n">F32</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">2048</span><span class="p">}),</span>
+<span class="w">                </span><span class="n">opaque</span><span class="p">);</span>
+</code></pre></div>
+<p>Since <code>xla::Shape</code> has a protocol buffer representation, you could store this
+serialized proto inside of <code>opaque</code> and deserialize it within your GPU
+custom-call. Note however that although <code>xla::ShapeProto</code> does not change
+frequently, it <em>does</em> change. Check the git log to see how it has changed in the
+past.</p>
+<h2 id="signalling-an-error">Signalling an error<a class="headerlink" href="#signalling-an-error" title="Permanent link">link</a></h2>
+<p>If your custom call encounters an error, you can signal the error to the XLA
+runtime (instead of e.g. crashing or returning nonsense in the output buffers)
+by using the following signature for your function on CPU:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xla/service/custom_call_status.h&quot;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">do_custom_call</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="o">**</span><span class="w"> </span><span class="n">in</span><span class="p">,</span><span class="w"> </span><span class="n">XlaCustomCallStatus</span><span class="o">*</span><span class="w"> </span><span class="n">status</span><span class="p">);</span>
+</code></pre></div>
+<p>... and on GPU:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;xla/service/custom_call_status.h&quot;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">do_custom_call</span><span class="p">(</span><span class="n">CUstream</span><span class="w"> </span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="o">**</span><span class="w"> </span><span class="n">buffers</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">opaque</span><span class="p">,</span>
+<span class="w">                    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">opaque_len</span><span class="p">,</span><span class="w"> </span><span class="n">xla</span><span class="o">::</span><span class="n">XlaCustomCallStatus</span><span class="o">*</span><span class="w"> </span><span class="n">status</span><span class="p">);</span>
+</code></pre></div>
+<p>You can signal failure by using <code>XlaCustomCallStatusSetFailure</code>, e.g.:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">do_custom_call</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="o">**</span><span class="w"> </span><span class="n">in</span><span class="p">,</span><span class="w"> </span><span class="n">XlaCustomCallStatus</span><span class="o">*</span><span class="w"> </span><span class="n">status</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// ... do some work.</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bad_condition</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">error_message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;An error occurred&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">XlaCustomCallStatusSetFailure</span><span class="p">(</span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">error_message</span><span class="p">,</span><span class="w"> </span><span class="n">strlen</span><span class="p">(</span><span class="n">error_message</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// ... continue.</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>You can also use <code>XlaCustomCallStatusSetSuccess</code> to indicate success, but the
+<code>XlaCustomCallStatus</code> is in a success state by default, so ignoring it
+completely will also indicate success.</p>
+<p>When using custom call functions with this signature, you must create the
+corresponding <code>custom-call</code> op with the appropriate API version set, e.g.:</p>
+<div class="highlight"><pre><span></span><code><span class="n">xla</span><span class="o">::</span><span class="n">CustomCall</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;do_custom_call&quot;</span><span class="p">,</span><span class="w"> </span><span class="cm">/*operands=*/</span><span class="p">{</span><span class="n">param0</span><span class="p">,</span><span class="w"> </span><span class="n">param1</span><span class="p">},</span>
+<span class="w">                </span><span class="cm">/*output_shape=*/</span><span class="n">xla</span><span class="o">::</span><span class="n">ShapeUtil</span><span class="o">::</span><span class="n">MakeShape</span><span class="p">(</span><span class="n">F32</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">2048</span><span class="p">}),</span>
+<span class="w">                </span><span class="n">opaque</span><span class="p">,</span><span class="w"> </span><span class="cm">/*has_side_effect=*/</span><span class="nb">false</span><span class="p">,</span>
+<span class="w">                </span><span class="cm">/*output_operand_aliasing=*/</span><span class="p">{},</span><span class="w"> </span><span class="cm">/*literal=*/</span><span class="k">nullptr</span><span class="p">,</span>
+<span class="w">                </span><span class="cm">/*schedule=*/</span><span class="n">xla</span><span class="o">::</span><span class="n">CustomCallSchedule</span><span class="o">::</span><span class="n">SCHEDULE_NONE</span><span class="p">,</span>
+<span class="w">                </span><span class="cm">/*api_version=*/</span><span class="n">API_VERSION_STATUS_RETURNING</span><span class="p">);</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the future all clients will be required to migrate their custom call
+functions to the new API version and the old one will be deprecated. For
+custom calls that can't fail, you can simply add the new
+<code>XlaCustomCallStatus*</code> parameter and then ignore it.</p>
+</div>
+<p>On failure, none of the custom call outputs will be used; the XLA runtime will
+terminate the computation. It is not possible for an HLO computation to recover
+from the error (e.g. by catching and handling it).</p>
+<h2 id="passing-tuples-to-custom-calls">Passing tuples to custom-calls<a class="headerlink" href="#passing-tuples-to-custom-calls" title="Permanent link">link</a></h2>
+<p>Consider the following custom-call.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">xla</span><span class="o">::</span><span class="n">ShapeUtil</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">xla</span><span class="o">::</span><span class="n">F32</span><span class="p">;</span>
+<span class="n">Shape</span><span class="w"> </span><span class="n">p0_shape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ShapeUtil</span><span class="o">::</span><span class="n">MakeTuple</span><span class="p">({</span>
+<span class="w">    </span><span class="n">ShapeUtil</span><span class="o">::</span><span class="n">MakeShape</span><span class="p">(</span><span class="n">F32</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">32</span><span class="p">}),</span>
+<span class="w">    </span><span class="n">ShapeUtil</span><span class="o">::</span><span class="n">MakeTuple</span><span class="p">({</span>
+<span class="w">        </span><span class="n">ShapeUtil</span><span class="o">::</span><span class="n">MakeShape</span><span class="p">(</span><span class="n">F32</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">64</span><span class="p">}),</span>
+<span class="w">        </span><span class="n">ShapeUtil</span><span class="o">::</span><span class="n">MakeShape</span><span class="p">(</span><span class="n">F32</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">128</span><span class="p">}),</span>
+<span class="w">    </span><span class="p">}),</span>
+<span class="w">    </span><span class="n">ShapeUtil</span><span class="o">::</span><span class="n">MakeShape</span><span class="p">(</span><span class="n">F32</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">256</span><span class="p">}),</span>
+<span class="p">});</span>
+<span class="n">xla</span><span class="o">::</span><span class="n">XlaOp</span><span class="w"> </span><span class="n">p0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xla</span><span class="o">::</span><span class="n">Parameter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">p0_shape</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;p0&quot;</span><span class="p">);</span>
+
+<span class="n">Shape</span><span class="w"> </span><span class="n">out_shape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ShapeUtil</span><span class="o">::</span><span class="n">MakeTuple</span><span class="p">({</span>
+<span class="w">  </span><span class="n">ShapeUtil</span><span class="o">::</span><span class="n">MakeShape</span><span class="p">(</span><span class="n">F32</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">512</span><span class="p">}),</span>
+<span class="w">  </span><span class="n">ShapeUtil</span><span class="o">::</span><span class="n">MakeShape</span><span class="p">(</span><span class="n">F32</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">1024</span><span class="p">}),</span>
+<span class="p">});</span>
+<span class="n">xla</span><span class="o">::</span><span class="n">CustomCall</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;do_custom_call&quot;</span><span class="p">,</span><span class="w"> </span><span class="cm">/*operands=*/</span><span class="p">{</span><span class="n">p0</span><span class="p">},</span><span class="w"> </span><span class="n">out_shape</span><span class="p">);</span>
+</code></pre></div>
+<p>On both CPU and GPU, a tuple is represented in memory as an array of pointers.
+In C++-pseudocode, parameter 0 above is laid out as follows.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// In-memory layout of parameter 0 from custom-call above.  True on both CPU</span>
+<span class="c1">// and GPU.</span>
+<span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">subbuf0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">float</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
+<span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">subbuf1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">float</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
+<span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">subbuf2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">float</span><span class="p">[</span><span class="mi">128</span><span class="p">]</span>
+<span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">subbuf3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">float</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
+
+<span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">subtuple</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">(</span><span class="o">*</span><span class="n">subtuple</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subbuf1</span><span class="p">;</span>
+<span class="p">(</span><span class="o">*</span><span class="n">subtuple</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subbuf2</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">p0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="p">(</span><span class="o">*</span><span class="n">p0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subbuf0</span><span class="p">;</span>
+<span class="p">(</span><span class="o">*</span><span class="n">p0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subtuple</span><span class="p">;</span>
+<span class="p">(</span><span class="o">*</span><span class="n">p0</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subbuf3</span><span class="p">;</span>
+</code></pre></div>
+<p>Although the in-memory representation of tuples is the same in CPU and GPU, they
+are handled differently in the CPU and GPU custom-call calling conventions.</p>
+<h3 id="tuple-outputs-as-temp-buffers">Tuple outputs as temp buffers<a class="headerlink" href="#tuple-outputs-as-temp-buffers" title="Permanent link">link</a></h3>
+<p>Tuple inputs to custom-calls are a convenience, but they aren't strictly
+necessary. If we didn't support tuple inputs to custom calls, you could always
+unpack the tuples using get-tuple-element before passing them to the custom
+call.</p>
+<p>On the other hand, tuple <em>outputs</em> do let you do things you couldn't otherwise.</p>
+<p>The obvious reason to have tuple outputs is, that's how a custom call (or any
+other XLA op) returns multiple independent arrays.</p>
+<p>But less obviously, a tuple output is also a way to give your custom call temp
+memory. Yes, an <em>output</em> can represent a temp buffer. Consider, an output buffer
+has the property that the op can write to it, and it can read from it after it's
+been written to. That's exactly what you want from a temp buffer.</p>
+<p>In the example above, suppose we wanted to use the <code>F32[1024]</code> as a temp buffer.
+Then we'd write the HLO just as above, and we'd simply never read tuple index 1
+of the custom call's output.</p>
+<h3 id="tuples-in-cpu-custom-calls">Tuples in CPU custom-calls<a class="headerlink" href="#tuples-in-cpu-custom-calls" title="Permanent link">link</a></h3>
+<p>In CPU code, we have a function <code>do_custom_call(const void** ins, void* out)</code>.
+<code>ins</code> is an array with just one element, which points to <code>param0</code>. The
+subbuffers of <code>param0</code> are accessible by dereferencing that pointer, and the
+subbuffers of <code>output_tuple</code> are accessible by dereferencing <code>out</code>.</p>
+<h3 id="tuples-in-gpu-custom-calls">Tuples in GPU custom-calls<a class="headerlink" href="#tuples-in-gpu-custom-calls" title="Permanent link">link</a></h3>
+<p>In GPU code, we have a function <code>do_custom_call(..., void** buffers, ...)</code>. In
+this case <code>buffers</code> is a host array of <em>six</em> device pointers, one for each leaf
+buffer in the input/output. To generate the flat list, we iterate over the
+parameters and output, and for each we do a preorder traversal of its shape.
+Concretely:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Layout of `buffers` parameter to GPU custom call function for custom-call</span>
+<span class="c1">// above.</span>
+<span class="n">buffers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">subbuf0</span>
+<span class="n">buffers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">subbuf1</span>
+<span class="n">buffers</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">subbuf2</span>
+<span class="n">buffers</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">subbuf3</span>
+<span class="n">buffers</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">output_subbuf0</span>
+<span class="n">buffers</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">output_subbuf1</span>
+</code></pre></div>
+
+  <hr>
+<div class="md-source-file">
+  <small>
+    
+      Last update:
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 10, 2023</span>
+      
+        <br>
+        Created:
+        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 9, 2023</span>
+      
+    
+  </small>
+</div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy", "content.action.edit", "navigation.tabs", "navigation.top", "navigation.instant", "toc.follow"], "search": "../assets/javascripts/workers/search.12658920.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5cf534bf.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
