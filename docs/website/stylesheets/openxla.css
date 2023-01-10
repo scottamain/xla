@@ -1,0 +1,36 @@
+@import url(//fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined);
+
+.md-header__button.md-logo :is(img,svg),
+.md-header__button.md-logo :-webkit-any(img,svg) {
+  height: 1.6rem;
+}
+
+.md-typeset {
+  font-size: .75rem;
+  line-height: 1.2rem;
+}
+
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: #1b466c; /* OpenXLA dark blue */
+  --md-typeset-a-color: #458be6; /* OpenXLA royal blue */
+  --md-accent-fg-color: #6fb7e1; /* OpenXLA light blue */
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #1b466c; /* OpenXLA dark blue */
+  --md-typeset-a-color: #6fb7e1; /* OpenXLA light blue */
+  --md-accent-fg-color: #458be6; /* OpenXLA royal blue */
+  /* H1 color */
+  --md-default-fg-color--light: rgba(204,234,254,0.6);
+  /* Button color */
+  --md-default-fg-color--lighter: rgba(204,234,254,0.3);
+}
+
+/* Set icon for anchor links (config must set toc permalink: 'link') */
+:root .headerlink {
+  font-family: "Material Icons";
+  position: relative;
+  top: 5px;
+  left: 0;
+}
+
