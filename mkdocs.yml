@@ -1,6 +1,7 @@
 # yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
 
 site_name: XLA
+logo_link_name: OpenXLA Project home
 repo_url: https://github.com/openxla/xla
 repo_name: openxla/xla
 edit_uri: edit/main/docs/
@@ -8,6 +9,7 @@ edit_uri: edit/main/docs/
 theme:
   name: material
   logo: website/assets/openxla-logo-lockup-white.svg
+  logo_alt: OpenXLA
   favicon: website/assets/favicon.ico
   icon:
     repo: fontawesome/brands/github
@@ -32,6 +34,10 @@ theme:
     - navigation.top       # "Back to top" button
     - navigation.instant   # Ajax-style dynamic loading
     - toc.follow           # Scroll the TOC panel to follow the reader
+  custom_dir: docs/website/overrides
+
+extra:
+  homepage: https://www.openxla.org
 
 extra_css:
   - website/stylesheets/openxla.css
