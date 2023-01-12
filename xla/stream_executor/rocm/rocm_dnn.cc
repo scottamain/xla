@@ -44,6 +44,7 @@ limitations under the License.
 #include "xla/stream_executor/stream.h"
 #include "xla/stream_executor/stream_executor_pimpl.h"
 #include "tsl/platform/hash.h"
+#include "tsl/util/determinism.h"
 #include "tsl/util/env_var.h"
 
 namespace {
@@ -251,6 +252,120 @@ namespace wrap {
 
 #endif
 
+#if (TF_ROCM_VERSION >= 50300)
+// clang-format off
+#define MIOPEN_DNN_ROUTINE_EACH(__macro)                             \
+  __macro(miopenBatchNormalizationBackward)                          \
+  __macro(miopenBatchNormalizationForwardInference)                  \
+  __macro(miopenBatchNormalizationForwardTraining)                   \
+  __macro(miopenGetConvolutionForwardOutputDim)                      \
+  __macro(miopenGetConvolutionNdForwardOutputDim)                    \
+  __macro(miopenFindConvolutionForwardAlgorithm)                     \
+  __macro(miopenCreateTensorDescriptor)                              \
+  __macro(miopenDestroyTensorDescriptor)                             \
+  __macro(miopenSetNdPoolingDescriptor)                              \
+  __macro(miopenSetPoolingIndexType)                                 \
+  __macro(miopenSetLRNDescriptor)                                    \
+  __macro(miopenLRNGetWorkSpaceSize)                                 \
+  __macro(miopenCreateConvolutionDescriptor)                         \
+  __macro(miopenCreatePoolingDescriptor)                             \
+  __macro(miopenDestroyPoolingDescriptor)                            \
+  __macro(miopenCreateLRNDescriptor)                                 \
+  __macro(miopenDestroyLRNDescriptor)                                \
+  __macro(miopenDestroyConvolutionDescriptor)                        \
+  __macro(miopenCreateWithStream)                                    \
+  __macro(miopenDestroy)                                             \
+  __macro(miopenSetStream)                                           \
+  __macro(miopenSetAllocator)                                        \
+  __macro(miopenActivationForward)                                   \
+  __macro(miopenConvolutionForward)                                  \
+  __macro(miopenConvolutionBackwardBias)                             \
+  __macro(miopenConvolutionForwardGetWorkSpaceSize)                  \
+  __macro(miopenInitConvolutionDescriptor)                           \
+  __macro(miopenInitConvolutionNdDescriptor)                         \
+  __macro(miopenGetConvolutionDescriptor)                            \
+  __macro(miopenGetConvolutionNdDescriptor)                          \
+  __macro(miopenSetConvolutionGroupCount)                            \
+  __macro(miopenSet4dTensorDescriptor)                               \
+  __macro(miopenGetTensorDescriptor)                                 \
+  __macro(miopenSetTensorDescriptor)                                 \
+  __macro(miopenGetTensorDescriptorSize)                             \
+  __macro(miopenPoolingForward)                                      \
+  __macro(miopenPoolingGetWorkSpaceSizeV2)                           \
+  __macro(miopenPoolingBackward)                                     \
+  __macro(miopenLRNForward)                                          \
+  __macro(miopenLRNBackward)                                         \
+  __macro(miopenOpTensor)                                            \
+  __macro(miopenConvolutionBackwardData)                             \
+  __macro(miopenConvolutionBackwardWeights)                          \
+  __macro(miopenConvolutionBackwardWeightsGetWorkSpaceSize)          \
+  __macro(miopenFindConvolutionBackwardDataAlgorithm)                \
+  __macro(miopenFindConvolutionBackwardWeightsAlgorithm)             \
+  __macro(miopenConvolutionBackwardDataGetWorkSpaceSize)             \
+  __macro(miopenCreateRNNDescriptor)                                 \
+  __macro(miopenSetRNNDescriptor)                                    \
+  __macro(miopenDestroyRNNDescriptor)                                \
+  __macro(miopenGetRNNParamsSize)                                    \
+  __macro(miopenGetRNNLayerParam)                                    \
+  __macro(miopenGetRNNLayerBias)                                     \
+  __macro(miopenGetRNNWorkspaceSize)                                 \
+  __macro(miopenGetRNNTrainingReserveSize)                           \
+  __macro(miopenRNNForwardInference)                                 \
+  __macro(miopenRNNForwardTraining)                                  \
+  __macro(miopenRNNBackwardData)                                     \
+  __macro(miopenRNNBackwardWeights)                                  \
+  __macro(miopenGetRNNLayerParamOffset)                              \
+  __macro(miopenGetRNNLayerParamSize)                                \
+  __macro(miopenGetRNNLayerBiasOffset)                               \
+  __macro(miopenGetRNNLayerBiasSize)                                 \
+  __macro(miopenGetRNNParamsDescriptor)                              \
+  __macro(miopenCreateActivationDescriptor)                          \
+  __macro(miopenSetActivationDescriptor)                             \
+  __macro(miopenGetActivationDescriptor)                             \
+  __macro(miopenDestroyActivationDescriptor)                         \
+  __macro(miopenCreateFusionPlan)                                    \
+  __macro(miopenCreateOpConvForward)                                 \
+  __macro(miopenCreateOpBiasForward)                                 \
+  __macro(miopenCreateOpActivationForward)                           \
+  __macro(miopenCreateOpActivationBackward)                          \
+  __macro(miopenCreateOpBatchNormInference)                          \
+  __macro(miopenCreateOpBatchNormForward)                            \
+  __macro(miopenCreateOpBatchNormBackward)                           \
+  __macro(miopenCompileFusionPlan)                                   \
+  __macro(miopenFusionPlanGetOp)                                     \
+  __macro(miopenCreateOperatorArgs)                                  \
+  __macro(miopenSetOpArgsConvForward)                                \
+  __macro(miopenSetOpArgsBiasForward)                                \
+  __macro(miopenSetOpArgsActivForward)                               \
+  __macro(miopenSetOpArgsActivBackward)                              \
+  __macro(miopenSetOpArgsBatchNormInference)                         \
+  __macro(miopenSetOpArgsBatchNormForward)                           \
+  __macro(miopenSetOpArgsBatchNormBackward)                          \
+  __macro(miopenExecuteFusionPlan)                                   \
+  __macro(miopenDestroyOperatorArgs)                                 \
+  __macro(miopenDestroyFusionPlan)                                   \
+  __macro(miopenConvolutionForwardGetSolutionCount)                  \
+  __macro(miopenConvolutionForwardGetSolution)                       \
+  __macro(miopenConvolutionForwardGetSolutionWorkspaceSize)          \
+  __macro(miopenConvolutionForwardCompileSolution)                   \
+  __macro(miopenConvolutionForwardImmediate)                         \
+  __macro(miopenConvolutionBackwardDataGetSolutionCount)             \
+  __macro(miopenConvolutionBackwardDataGetSolution)                  \
+  __macro(miopenConvolutionBackwardDataGetSolutionWorkspaceSize)     \
+  __macro(miopenConvolutionBackwardDataCompileSolution)              \
+  __macro(miopenConvolutionBackwardDataImmediate)                    \
+  __macro(miopenConvolutionBackwardWeightsGetSolutionCount)          \
+  __macro(miopenConvolutionBackwardWeightsGetSolution)               \
+  __macro(miopenConvolutionBackwardWeightsGetSolutionWorkspaceSize)  \
+  __macro(miopenConvolutionBackwardWeightsCompileSolution)           \
+  __macro(miopenConvolutionBackwardWeightsImmediate)                 \
+  __macro(miopenCreateCTCLossDescriptor)                             \
+  __macro(miopenSetCTCLossDescriptor)                                \
+  __macro(miopenGetCTCLossWorkspaceSize)                             \
+  __macro(miopenCTCLoss)                                             \
+  __macro(miopenDestroyCTCLossDescriptor)                            \
+  __macro(miopenSetConvolutionAttribute)  // clang-format on
+#else
 // clang-format off
 #define MIOPEN_DNN_ROUTINE_EACH(__macro)                             \
   __macro(miopenBatchNormalizationBackward)                          \
@@ -363,6 +478,7 @@ namespace wrap {
   __macro(miopenCTCLoss)                                             \
   __macro(miopenDestroyCTCLossDescriptor)
 // clang-format on
+#endif
 
 MIOPEN_DNN_ROUTINE_EACH(STREAM_EXECUTOR_MIOPEN_WRAP)
 
@@ -419,6 +535,8 @@ uint64_t GetHashValue(miopenConvolutionDescriptor_t conv_desc) {
 
   return hash_value;
 }
+
+bool RequireMIOpenDeterminism() { return tsl::OpDeterminismRequired(); }
 
 // Class to implement a cache of compiled fusion plans
 class CachedFusionPlans {
@@ -638,7 +756,7 @@ tsl::Status MIOpenSupport::Init() {
                                   ToString(status))};
 }
 
-port::StatusOr<perftools::gputools::dnn::VersionInfo>
+tsl::StatusOr<perftools::gputools::dnn::VersionInfo>
 MIOpenSupport::GetVersion() {
   // ROCM TODO: retrieve MIOpen version with its API
   return perftools::gputools::dnn::VersionInfo(1, 3, 0);
@@ -852,6 +970,17 @@ class ScopedConvolutionDescriptor {
       LOG(FATAL) << "could not set miopen convolution group count: "
                  << ToString(status);
     }
+
+#if (TF_ROCM_VERSION >= 50300)
+    if (RequireMIOpenDeterminism()) {
+      status = wrap::miopenSetConvolutionAttribute(
+          handle_, MIOPEN_CONVOLUTION_ATTRIB_DETERMINISTIC, 1);
+      if (status != miopenStatusSuccess) {
+        LOG(FATAL) << "could not set miopen convolution attribute: "
+                   << ToString(status);
+      }
+    }
+#endif
   }
   ~ScopedConvolutionDescriptor() {
     auto status = wrap::miopenDestroyConvolutionDescriptor(handle_);
@@ -2555,7 +2684,7 @@ tsl::Status MIOpenSupport::DoCtcLoss(
                        scratch_memory, ctc_loss_algo_id);
 }
 
-port::StatusOr<std::unique_ptr<dnn::RnnDescriptor>>
+tsl::StatusOr<std::unique_ptr<dnn::RnnDescriptor>>
 MIOpenSupport::createRnnDescriptor(
     int num_layers, int hidden_size, int input_size, int cell_size,
     int batch_size, dnn::RnnInputMode input_mode,
@@ -2586,11 +2715,11 @@ MIOpenSupport::createRnnDescriptor(
   if (!rnn_desc->ok()) {
     return rnn_desc->Status();
   }
-  return port::StatusOr<std::unique_ptr<dnn::RnnDescriptor>>(
+  return tsl::StatusOr<std::unique_ptr<dnn::RnnDescriptor>>(
       std::move(rnn_desc));
 }
 
-port::StatusOr<std::unique_ptr<dnn::RnnSequenceTensorDescriptor>>
+tsl::StatusOr<std::unique_ptr<dnn::RnnSequenceTensorDescriptor>>
 MIOpenSupport::createRnnSequenceTensorDescriptor(int seq_length, int batch_size,
                                                  int data_size,
                                                  dnn::DataType data_type) {
@@ -2600,11 +2729,11 @@ MIOpenSupport::createRnnSequenceTensorDescriptor(int seq_length, int batch_size,
   if (!seq_desc->ok()) {
     return seq_desc->Status();
   }
-  return port::StatusOr<std::unique_ptr<dnn::RnnSequenceTensorDescriptor>>(
+  return tsl::StatusOr<std::unique_ptr<dnn::RnnSequenceTensorDescriptor>>(
       std::move(seq_desc));
 }
 
-port::StatusOr<std::unique_ptr<dnn::RnnStateTensorDescriptor>>
+tsl::StatusOr<std::unique_ptr<dnn::RnnStateTensorDescriptor>>
 MIOpenSupport::createRnnStateTensorDescriptor(int num_layer, int batch_size,
                                               int data_size,
                                               dnn::DataType data_type) {
@@ -2614,7 +2743,7 @@ MIOpenSupport::createRnnStateTensorDescriptor(int num_layer, int batch_size,
   if (!state_desc->ok()) {
     return state_desc->Status();
   }
-  return port::StatusOr<std::unique_ptr<dnn::RnnStateTensorDescriptor>>(
+  return tsl::StatusOr<std::unique_ptr<dnn::RnnStateTensorDescriptor>>(
       std::move(state_desc));
 }
 
@@ -2964,7 +3093,7 @@ class RocmConvRunner : public dnn::ConvRunner {
 
   size_t GetWorkspaceSize() const override { return workspace_size_; }
 
-  port::StatusOr<AlgorithmDesc> ToAlgorithmDesc() const override {
+  tsl::StatusOr<AlgorithmDesc> ToAlgorithmDesc() const override {
     return {{algo_id_, false, workspace_size_}};
   }
 
@@ -3172,7 +3301,7 @@ tsl::Status MIOpenSupport::GetConvolveRunners(
   return tsl::OkStatus();
 }
 
-port::StatusOr<std::unique_ptr<const dnn::ConvRunner>>
+tsl::StatusOr<std::unique_ptr<const dnn::ConvRunner>>
 MIOpenSupport::ConvolveRunnerFromDesc(
     Stream* stream, const dnn::AlgorithmDesc& algorithm_desc,
     dnn::ConvolutionKind kind, dnn::DataType input_type,

@@ -25,6 +25,7 @@ limitations under the License.
 #include <memory>
 #include <optional>
 #include <string>
+#include <system_error>  // NOLINT
 #include <utility>
 #include <variant>
 #include <vector>
@@ -37,11 +38,14 @@ limitations under the License.
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Verifier.h"
+#include "llvm/Support/raw_ostream.h"
 #include "llvm/Transforms/Utils/SplitModule.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"  // from @llvm-project
 #include "mlir/IR/BuiltinOps.h"  // from @llvm-project
+#include "mlir/IR/Diagnostics.h"  // from @llvm-project
 #include "mlir/IR/TypeUtilities.h"  // from @llvm-project
 #include "mlir/Pass/PassManager.h"  // from @llvm-project
+#include "mlir/Support/LogicalResult.h"  // from @llvm-project
 #include "xla/hlo/ir/hlo_instruction.h"
 #include "xla/hlo/ir/hlo_instructions.h"
 #include "xla/hlo/transforms/hlo_constant_splitter.h"
@@ -180,6 +184,7 @@ limitations under the License.
 #include "tsl/platform/casts.h"
 #include "tsl/platform/env.h"
 #include "tsl/platform/logging.h"
+#include "tsl/platform/path.h"
 #include "tsl/platform/status.h"
 #include "tsl/platform/statusor.h"
 #include "tsl/platform/threadpool.h"
@@ -254,8 +259,7 @@ class GpuBfloat16Support : public BFloat16Support {
     if (std::holds_alternative<se::StreamExecutor*>(gpu_info_)) {
       auto stream_exec = std::get<se::StreamExecutor*>(gpu_info_);
       if (se::dnn::DnnSupport* dnn = stream_exec->AsDnn()) {
-        se::port::StatusOr<se::dnn::VersionInfo> cudnn_version =
-            dnn->GetVersion();
+        StatusOr<se::dnn::VersionInfo> cudnn_version = dnn->GetVersion();
         if (cudnn_version.ok()) {
           auto cuda_compute_capability =
               stream_exec->GetDeviceDescription().cuda_compute_capability();
@@ -938,7 +942,8 @@ Status GpuCompiler::OptimizeHloPostLayoutAssignment(
   // the gte(customcall, 0) would probably already be into a fusion node.  We
   // can't simplify across HloComputation boundaries, so in this case we
   // wouldn't be able to simplify away the new_tuple bits.
-  pipeline.AddPass<GpuConvAlgorithmPicker>(stream_exec, device_allocator);
+  GpuConvAlgorithmPicker::DeviceConfig config{stream_exec, device_allocator};
+  pipeline.AddPass<GpuConvAlgorithmPicker>(config);
 
   // Clean up new_tuple described above.
   pipeline.AddPass<TupleSimplifier>();
@@ -1178,6 +1183,12 @@ static bool HasFp8(const HloModule& hlo_module) {
   return false;
 }
 
+// Prints mlir diagnostic messages to VLOG level 2.
+static mlir::LogicalResult DiagnosticHandler(mlir::Diagnostic& diag) {
+  VLOG(2) << diag.str();
+  return mlir::failure();
+}
+
 // The order of `thunk_sequence` corresponds to
 // `hlo_schedule->ThunkLaunchOrder()`.
 static Status CompileModuleToLlvmIrImpl(
@@ -1223,6 +1234,7 @@ static Status CompileModuleToLlvmIrImpl(
   mlir::DialectRegistry registry;
   IrEmitterUnnested::GetDependentDialects(registry);
   mlir::MLIRContext mlir_context(registry);
+  mlir_context.getDiagEngine().registerHandler(DiagnosticHandler);
   mlir::OwningOpRef<mlir::ModuleOp> mlir_module =
       mlir::ModuleOp::create(mlir::Builder(&mlir_context).getUnknownLoc());
 
@@ -1245,9 +1257,36 @@ static Status CompileModuleToLlvmIrImpl(
 
   if (hlo_module->config().debug_options().xla_gpu_enable_mlir_lowering()) {
     mlir::PassManager pm(&mlir_context);
+    bool uses_multithreading = pm.getContext()->isMultithreadingEnabled();
+    std::optional<llvm::raw_fd_ostream> log_stream;
+    if (hlo_module->config().debug_options().xla_gpu_dump_llvmir()) {
+      const std::string basename =
+          absl::StrCat(absl::string_view(tsl::io::Basename(hlo_module->name())),
+                       ".mlir-passes.log");
+      std::string outputs_dir;
+      tsl::io::GetTestUndeclaredOutputsDir(&outputs_dir);
+      std::string path = tsl::io::JoinPath(outputs_dir, basename);
+      std::error_code err;
+      log_stream.emplace(path, err, llvm::sys::fs::OF_None);
+      if (err) {
+        log_stream.reset();
+      }
+
+      auto print_before = [](mlir::Pass*, mlir::Operation*) { return true; };
+      auto print_after = [](mlir::Pass*, mlir::Operation*) { return false; };
+      pm.getContext()->disableMultithreading();
+      pm.enableIRPrinting(print_before, print_after, true, true, false,
+                          *log_stream, {});
+    }
     pm.addPass(mlir::createGpuFusionRewritePass());
     if (failed(pm.run(mlir_module.get()))) {
       return InternalError("Failed to run gpu-fusion-rewrite pass");
+    }
+    if (hlo_module->config().debug_options().xla_gpu_dump_llvmir()) {
+      pm.getContext()->enableMultithreading(uses_multithreading);
+      if (log_stream) {
+        log_stream->flush();
+      }
     }
   }
 

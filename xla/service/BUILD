@@ -69,6 +69,12 @@ tf_proto_library(
     cc_api_version = 2,
 )
 
+xla_py_proto_library(
+    name = "metrics_pb2",
+    api_version = 2,
+    deps = [":metrics_proto"],
+)
+
 # Filegroup used to collect source files for dependency checking.
 filegroup(
     name = "c_srcs",
@@ -3979,6 +3985,7 @@ cc_library(
 xla_cc_test(
     name = "hlo_execution_profile_test",
     srcs = ["hlo_execution_profile_test.cc"],
+    tags = ["no_mac_arm64"],
     deps = [
         ":cpu_plugin",
         ":hlo_cost_analysis",
@@ -6745,12 +6752,17 @@ cc_library(
     srcs = ["compilation_environments.cc"],
     hdrs = ["compilation_environments.h"],
     deps = [
+        "//google/protobuf:any_cc_proto",
+        "//xla:statusor",
+        "//xla:xla_proto_cc",
+        "@com_google_absl//absl/algorithm:container",
         "@com_google_absl//absl/base:core_headers",
         "@com_google_absl//absl/container:flat_hash_map",
         "@com_google_absl//absl/memory",
         "@com_google_absl//absl/strings",
         "@com_google_absl//absl/synchronization",
         "@tsl//tsl/platform:casts",
+        "@tsl//tsl/platform:errors",
         "@tsl//tsl/platform:logging",  # fixdeps: keep
         "@tsl//tsl/platform:protobuf",
     ],
@@ -6776,8 +6788,11 @@ xla_cc_test(
     deps = [
         ":compilation_environments",
         ":test_compilation_environment_proto_cc",
+        "//xla:statusor",
         "//xla:test",
+        "//xla:xla_proto_cc",
         "//xla/tests:xla_internal_test_main",
+        "@tsl//tsl/lib/core:status_test_util",
         "@tsl//tsl/platform:casts",
         "@tsl//tsl/platform:protobuf",
     ],
@@ -7091,7 +7106,7 @@ xla_cc_test(
         "@com_google_googletest//:gtest_main",
         "@tsl//tsl/lib/core:status_test_util",
         "@tsl//tsl/platform:env",
-        "@tsl//tsl/platform:resource_loader",
+        "@tsl//tsl/platform:path",
         "@tsl//tsl/platform:statusor",
         "@tsl//tsl/platform:test",
     ],
@@ -7101,7 +7116,6 @@ xla_cc_test(
     name = "xla_aot_compile_stablehlo_cpu_test",
     srcs = ["xla_aot_compile_stablehlo_cpu_test.cc"],
     data = [":xla_aot_compile_stablehlo_test_cpu_executable"],
-    tags = ["no_oss"],
     deps = [
         ":cpu_plugin",
         ":platform_util",
@@ -7114,7 +7128,7 @@ xla_cc_test(
         "@com_google_googletest//:gtest_main",
         "@tsl//tsl/lib/core:status_test_util",
         "@tsl//tsl/platform:env",
-        "@tsl//tsl/platform:resource_loader",
+        "@tsl//tsl/platform:path",
         "@tsl//tsl/platform:statusor",
         "@tsl//tsl/platform:test",
     ],
@@ -7150,7 +7164,7 @@ xla_cc_test(
         "//xla/service/cpu:cpu_compiler",
         "@tsl//tsl/lib/core:status_test_util",
         "@tsl//tsl/platform:env",
-        "@tsl//tsl/platform:resource_loader",
+        "@tsl//tsl/platform:path",
         "@tsl//tsl/platform:statusor",
         "@tsl//tsl/platform:test",
     ]),

@@ -123,6 +123,7 @@ limitations under the License.
 #include "xla/service/cpu/runtime/collectives.h"
 #include "xla/service/cpu/runtime/custom_call.h"
 #include "xla/service/cpu/runtime/fft_call.h"
+#include "xla/service/cpu/runtime/rng.h"
 #include "xla/service/cpu/runtime/xfeed.h"
 #include "xla/service/cpu/simple_orc_jit.h"
 #include "xla/service/cpu/xla_framework.h"
@@ -323,6 +324,7 @@ runtime::JitExecutable::Options GetXlaRuntimeJitExecutableOptions() {
         PopulateXlaCpuCustomCall(registry);
         PopulateXlaXfeedCall(registry);
         PopulateXlaCpuFftCall(registry);
+        PopulateXlaCpuRngCall(registry);
       });
   opts.compiler.create_compilation_pipeline =
       [copts](xla::runtime::PassManager& passes) {
@@ -556,7 +558,9 @@ Status CpuCompiler::RunHloPassesThroughLayoutAssn(
 
   // Expand random number generation.
   pipeline.AddPass<RngExpander>();
-  pipeline.AddPass<RngBitGeneratorExpander>(RandomAlgorithm::RNG_PHILOX);
+  if (!is_mlir_compile) {
+    pipeline.AddPass<RngBitGeneratorExpander>(RandomAlgorithm::RNG_PHILOX);
+  }
 
   // Remove zero-sized HLO from the input so that other passes don't have to
   // handle it.
@@ -932,7 +936,6 @@ StatusOr<std::unique_ptr<HloModule>> CpuCompiler::RunHloPasses(
   TF_RETURN_IF_ERROR(RunHloPasses(
       module.get(), /*is_aot_compile=*/false, jit_target_machine.get(),
       /*is_mlir_compile=*/
-      module->config().debug_options().xla_cpu_enable_mlir_lowering() ||
           module->config().debug_options().xla_cpu_use_xla_runtime()));
   return std::move(module);
 }
@@ -1009,6 +1012,8 @@ Status LowerMLIRModule(mlir::ModuleOp mlir_module,
 
   xla::runtime::PassManager xla_pm(&pm);
   HloXlaRuntimePipelineOptions options;
+  options.enable_tiling_and_fusion =
+      GetDebugOptionsFromFlags().xla_cpu_enable_mlir_tiling_and_fusion();
   options.sparse_bufferization = false;
   options.outline_with_xla_framework = true;
   TF_RETURN_IF_ERROR(CreateHloXlaRuntimePipeline(xla_pm, options));
@@ -1233,25 +1238,6 @@ CpuCompiler::CompileLegacyCpuExecutable(std::unique_ptr<HloModule> module) {
   // before a caller computation.
 
   std::string function_name;
-  if (module->config().debug_options().xla_cpu_enable_mlir_lowering()) {
-    TF_ASSIGN_OR_RETURN(
-        auto mlir_module,
-        createMLIRModule(module.get(), mlir_context, assignment.get()));
-    TF_RETURN_IF_ERROR(LowerMLIRModule(*mlir_module, mlir_context));
-
-    function_name = entry_computation->name();
-    // TODO(kramerb): Don't rely on the exact function name.
-    llvm::cast<mlir::LLVM::LLVMFuncOp>(
-        mlir_module->lookupSymbol("main_xla_framework"))
-        .setName(function_name);
-
-    llvm_module = mlir::translateModuleToLLVMIR(*mlir_module, *llvm_context);
-    if (!llvm_module) {
-      return InternalError("Translation to LLVM IR failed");
-    }
-    llvm_module->setDataLayout((*jit)->data_layout());
-    llvm_module->setTargetTriple((*jit)->target_triple().getTriple());
-  } else {
     LLVMTargetMachineFeatures target_machine_features((*jit)->target_machine());
     IrEmitter ir_emitter(
         &mlir_context, *module, *assignment, llvm_module.get(),
@@ -1301,7 +1287,6 @@ CpuCompiler::CompileLegacyCpuExecutable(std::unique_ptr<HloModule> module) {
       return std::string(function_name_vector.begin(),
                          function_name_vector.end());
     }();
-  }
 
   std::string ir_module_string;
   if (embed_ir_in_executable) {
