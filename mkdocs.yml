@@ -1,10 +1,12 @@
 # yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
 
 site_name: XLA
-logo_link_name: OpenXLA Project home
+logo_link_name: OpenXLA Project
 repo_url: https://github.com/openxla/xla
 repo_name: openxla/xla
 edit_uri: edit/main/docs/
+extra:
+  homepage: https://scottamain.github.io/community
 
 theme:
   name: material
@@ -36,20 +38,21 @@ theme:
     - toc.follow           # Scroll the TOC panel to follow the reader
   custom_dir: docs/website/overrides
 
-extra:
-  homepage: https://www.openxla.org
-
 extra_css:
   - website/stylesheets/openxla.css
 extra_javascript:
-  # Required for MathJax
+  # MathJax
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  # Highlight.js
+  - website/javascript/highlight.min.js
+  - website/javascript/highlight-mlir.js
 
 markdown_extensions:
   - admonition              # Notes, tips, caution, warnings, etc.
   - pymdownx.superfences    # Nesting code fences and custom fence formats
-  - pymdownx.highlight      # Syntax highlighting for code blocks
+  - pymdownx.highlight:     # Syntax highlighting for code blocks
+      use_pygments: false   #   Use highlight.js to get MLIR syntax support
   - pymdownx.inlinehilite   # And inline code (just in case): `#!python range()`
   - pymdownx.snippets:      # Include files/snippets: --8<-- 'README.md'
       check_paths: True     #   and fail the build if file not found
@@ -60,7 +63,7 @@ markdown_extensions:
       generic: true         #   (required for some reason)
   - toc:                    # Settings for table of contents
       permalink: 'link'     # Use Material font's "link" icon; see openxla.css
-      toc_depth: 3          # Default number of headings to show in TOC
+      toc_depth: 3          # Max heading level to include in TOC
 
 plugins:
   - search                         # Search bar
