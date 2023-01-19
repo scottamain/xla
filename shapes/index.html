@@ -83,18 +83,83 @@
     </div>
     
     
-      
+      <!--
+  Copyright (c) 2016-2023 Martin Donath <martin.donath@squidfunk.com>
 
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+<!-- OpenXLA override just to add logo_link_name in the link to home -->
+
+<!-- Determine base classes -->
+
+
+
+<!-- Header -->
 <header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="XLA" class="md-header__button md-logo" aria-label="XLA" data-md-component="logo">
-      
-  <img src="../website/assets/openxla-logo-lockup-white.svg" alt="logo">
+  <nav
+    class="md-header__inner md-grid"
+    aria-label="Header"
+  >
+
+    <!-- Link to home -->
+    <a
+      href="https://scottamain.github.io/community"
+      title="OpenXLA Project"
+      class="md-header__button md-logo"
+      aria-label="OpenXLA Project"
+      data-md-component="logo"
+    >
+      <!--
+  Copyright (c) 2016-2022 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+<!-- Logo (customized to provide img alt text) -->
+
+  <img src="../website/assets/openxla-logo-lockup-white.svg" alt="OpenXLA" />
 
     </a>
+
+    <!-- Button to open drawer -->
     <label class="md-header__button md-icon" for="__drawer">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
+
+    <!-- Header title -->
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
@@ -111,32 +176,74 @@
         </div>
       </div>
     </div>
+
+    <!-- Color palette -->
     
       <form class="md-header__option" data-md-component="palette">
         
           
-          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          <input
+            class="md-option"
+            data-md-color-media=""
+            data-md-color-scheme="default"
+            data-md-color-primary=""
+            data-md-color-accent=""
+            
+              aria-label="Switch to dark mode"
+            
+            type="radio"
+            name="__palette"
+            id="__palette_1"
+          />
           
-            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+            <label
+              class="md-header__button md-icon"
+              title="Switch to dark mode"
+              for="__palette_2"
+              hidden
+            >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18V6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-2.69L23.31 12 20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69Z"/></svg>
             </label>
           
         
           
-          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          <input
+            class="md-option"
+            data-md-color-media=""
+            data-md-color-scheme="slate"
+            data-md-color-primary=""
+            data-md-color-accent=""
+            
+              aria-label="Switch to light mode"
+            
+            type="radio"
+            name="__palette"
+            id="__palette_2"
+          />
           
-            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+            <label
+              class="md-header__button md-icon"
+              title="Switch to light mode"
+              for="__palette_1"
+              hidden
+            >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18V6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-2.69L23.31 12 20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69Z"/></svg>
             </label>
           
         
       </form>
     
+
+    <!-- Site language selector -->
     
+
+    <!-- Button to open search modal -->
     
       <label class="md-header__button md-icon" for="__search">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
       </label>
+
+      <!-- Search interface -->
       <div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
@@ -167,6 +274,8 @@
   </div>
 </div>
     
+
+    <!-- Repository information -->
     
       <div class="md-header__source">
         <a href="https://github.com/openxla/xla" title="Go to repository" class="md-source" data-md-component="source">
@@ -181,6 +290,8 @@
       </div>
     
   </nav>
+
+  <!-- Navigation tabs (sticky) -->
   
 </header>
     
@@ -261,9 +372,32 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="XLA" class="md-nav__button md-logo" aria-label="XLA" data-md-component="logo">
-      
-  <img src="../website/assets/openxla-logo-lockup-white.svg" alt="logo">
+    <a href="https://scottamain.github.io/community" title="XLA" class="md-nav__button md-logo" aria-label="XLA" data-md-component="logo">
+      <!--
+  Copyright (c) 2016-2022 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+<!-- Logo (customized to provide img alt text) -->
+
+  <img src="../website/assets/openxla-logo-lockup-white.svg" alt="OpenXLA" />
 
     </a>
     XLA
@@ -669,29 +803,33 @@ short).</p>
 <ul>
 <li>
 <p>The rank of an array is equal to the number of dimensions. The <em>true rank</em>
-    of an array is the number of dimensions which have a size greater than 1.</p>
+  of an array is the number of dimensions which have a size greater than 1.</p>
 </li>
 <li>
 <p>Dimensions are numbered from <code>0</code> up to <code>N-1</code> for an <code>N</code> dimensional array.
-    The dimension numbers are arbitrary labels for convenience. The order of
-    these dimension numbers does not imply a particular minor/major ordering in
-    the layout of the shape. The layout is determined by the <code>Layout</code> proto.</p>
+  The dimension numbers are arbitrary labels for convenience. The order of
+  these dimension numbers does not imply a particular minor/major ordering in
+  the layout of the shape. The layout is determined by the <code>Layout</code> proto.</p>
 </li>
 <li>
 <p>By convention, dimensions are listed in increasing order of dimension
-    number. For example, for a 3-dimensional array of size <code>[A x B x C]</code>,
-    dimension 0 has size <code>A</code>, dimension 1 has size <code>B</code> and dimension 2 has size
-    <code>C</code>.</p>
-<p>Some utilities in XLA also support negative indexing, similarly to Python;
-dimension -1 is the last dimension (equivalent to <code>N-1</code> for an <code>N</code>
-dimensional array). For example, for the 3-dimensional array described
-above, dimension -1 has size <code>C</code>, dimension -2 has size <code>B</code> and so on.</p>
+  number. For example, for a 3-dimensional array of size <code>[A x B x C]</code>,
+  dimension 0 has size <code>A</code>, dimension 1 has size <code>B</code> and dimension 2 has size
+  <code>C</code>.</p>
 </li>
+</ul>
+<p>Some utilities in XLA also support negative indexing, similarly to Python;
+  dimension -1 is the last dimension (equivalent to <code>N-1</code> for an <code>N</code>
+  dimensional array). For example, for the 3-dimensional array described
+  above, dimension -1 has size <code>C</code>, dimension -2 has size <code>B</code> and so on.</p>
+<ul>
 <li>
 <p>Two, three, and four dimensional arrays often have specific letters
-    associated with dimensions. For example, for a 2D array:</p>
-<ul>
-<li>dimension 0: <code>y</code></li>
+  associated with dimensions. For example, for a 2D array:</p>
+</li>
+<li>
+<p>dimension 0: <code>y</code></p>
+</li>
 <li>dimension 1: <code>x</code></li>
 </ul>
 <p>For a 3D array:</p>
@@ -705,27 +843,26 @@ above, dimension -1 has size <code>C</code>, dimension -2 has size <code>B</code
 <li>dimension 0: <code>p</code></li>
 <li>dimension 1: <code>z</code></li>
 <li>dimension 2: <code>y</code></li>
-<li>dimension 3: <code>x</code></li>
-</ul>
+<li>
+<p>dimension 3: <code>x</code></p>
 </li>
 <li>
 <p>Functions in the XLA API which take dimensions do so in increasing order of
-    dimension number. This matches the ordering used when passing dimensions as
-    an <code>initializer_list</code>; e.g.</p>
-<p><code>ShapeUtil::MakeShape(F32, {A, B, C, D})</code></p>
-<p>Will create a shape whose dimension size array consists of the sequence
-<code>[A, B, C, D]</code>.</p>
+  dimension number. This matches the ordering used when passing dimensions as
+  an <code>initializer_list</code>; e.g.</p>
 </li>
 </ul>
+<p><code>ShapeUtil::MakeShape(F32, {A, B, C, D})</code></p>
+<p>Will create a shape whose dimension size array consists of the sequence
+  <code>[A, B, C, D]</code>.</p>
 <h2 id="layout">Layout<a class="headerlink" href="#layout" title="Permanent link">link</a></h2>
 <p>The <code>Layout</code> proto describes how an array is represented in memory. The <code>Layout</code>
 proto includes the following fields:</p>
-<div class="highlight"><pre><span></span><code>message Layout {
+<pre class="highlight"><code>message Layout {
   repeated int64 minor_to_major = 1;
   repeated int64 padded_dimensions = 2;
   optional PaddingValue padding_value = 3;
-}
-</code></pre></div>
+}</code></pre>
 <h3 id="minor-to-major-dimension-ordering">Minor-to-major dimension ordering<a class="headerlink" href="#minor-to-major-dimension-ordering" title="Permanent link">link</a></h3>
 <p>The only required field is <code>minor_to_major</code>. This field describes the
 minor-to-major ordering of the dimensions within a shape. Values in
@@ -735,22 +872,19 @@ dimension up to the last value which is the most-major dimension. The most-minor
 dimension is the dimension which changes most rapidly when stepping through the
 elements of the array laid out in linear memory.</p>
 <p>For example, consider the following 2D array of size <code>[2 x 3]</code>:</p>
-<div class="highlight"><pre><span></span><code>a b c
-d e f
-</code></pre></div>
+<pre class="highlight"><code>a b c
+d e f</code></pre>
 <p>Here dimension <code>0</code> is size 2, and dimension <code>1</code> is size 3. If the
 <code>minor_to_major</code> field in the layout is <code>[0, 1]</code> then dimension <code>0</code> is the
 most-minor dimension and dimension <code>1</code> is the most-major dimension. This
 corresponds to the following layout in linear memory:</p>
-<div class="highlight"><pre><span></span><code>a d b e c f
-</code></pre></div>
+<pre class="highlight"><code>a d b e c f</code></pre>
 <p>This minor-to-major dimension order of <code>0</code> up to <code>N-1</code> is akin to <em>column-major</em>
 (at rank 2). Assuming a monotonic ordering of dimensions, another name we may
 use to refer to this layout in the code is simply "dim 0 is minor".</p>
 <p>On the other hand, if the <code>minor_to_major</code> field in the layout is <code>[1, 0]</code> then
 the layout in linear memory is:</p>
-<div class="highlight"><pre><span></span><code>a b c d e f
-</code></pre></div>
+<pre class="highlight"><code>a b c d e f</code></pre>
 <p>A minor-to-major dimension order of <code>N-1</code> down to <code>0</code> for an <code>N</code> dimensional
 array is akin to <em>row-major</em> (at rank 2). Assuming a monotonic ordering of
 dimensions, another name we may use to refer to this layout in the code is
@@ -767,14 +901,12 @@ must equal the rank of the shape.</p>
 <code>[3, 5]</code> then dimension 0 is padded to a width of 3 and dimension 1 is padded to
 a width of 5. The layout in linear memory (assuming a padding value of 0 and
 column-major layout) is:</p>
-<div class="highlight"><pre><span></span><code>a d 0 b e 0 c f 0 0 0 0 0 0 0
-</code></pre></div>
+<pre class="highlight"><code>a d 0 b e 0 c f 0 0 0 0 0 0 0</code></pre>
 <p>This is equivalent to the layout of the following array with the same
 minor-to-major dimension order:</p>
-<div class="highlight"><pre><span></span><code>a b c 0 0
+<pre class="highlight"><code>a b c 0 0
 d e f 0 0
-0 0 0 0 0
-</code></pre></div>
+0 0 0 0 0</code></pre>
 <h3 id="indexing-into-arrays">Indexing into arrays<a class="headerlink" href="#indexing-into-arrays" title="Permanent link">link</a></h3>
 <p>The class <code>IndexUtil</code> in
 <a href="https://github.com/openxla/xla/tree/main/xla/index_util.h">index_util.h</a>
@@ -790,7 +922,7 @@ manipulation of shapes and layouts.</p>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 9, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 11, 2023</span>
       
         <br>
         Created:
@@ -849,6 +981,10 @@ manipulation of shapes and layouts.</p>
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../website/javascript/highlight.min.js"></script>
+      
+        <script src="../website/javascript/highlight-mlir.js"></script>
       
     
   </body>

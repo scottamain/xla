@@ -83,18 +83,83 @@
     </div>
     
     
-      
+      <!--
+  Copyright (c) 2016-2023 Martin Donath <martin.donath@squidfunk.com>
 
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+<!-- OpenXLA override just to add logo_link_name in the link to home -->
+
+<!-- Determine base classes -->
+
+
+
+<!-- Header -->
 <header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="XLA" class="md-header__button md-logo" aria-label="XLA" data-md-component="logo">
-      
-  <img src="../website/assets/openxla-logo-lockup-white.svg" alt="logo">
+  <nav
+    class="md-header__inner md-grid"
+    aria-label="Header"
+  >
+
+    <!-- Link to home -->
+    <a
+      href="https://scottamain.github.io/community"
+      title="OpenXLA Project"
+      class="md-header__button md-logo"
+      aria-label="OpenXLA Project"
+      data-md-component="logo"
+    >
+      <!--
+  Copyright (c) 2016-2022 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+<!-- Logo (customized to provide img alt text) -->
+
+  <img src="../website/assets/openxla-logo-lockup-white.svg" alt="OpenXLA" />
 
     </a>
+
+    <!-- Button to open drawer -->
     <label class="md-header__button md-icon" for="__drawer">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
+
+    <!-- Header title -->
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
@@ -111,32 +176,74 @@
         </div>
       </div>
     </div>
+
+    <!-- Color palette -->
     
       <form class="md-header__option" data-md-component="palette">
         
           
-          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          <input
+            class="md-option"
+            data-md-color-media=""
+            data-md-color-scheme="default"
+            data-md-color-primary=""
+            data-md-color-accent=""
+            
+              aria-label="Switch to dark mode"
+            
+            type="radio"
+            name="__palette"
+            id="__palette_1"
+          />
           
-            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+            <label
+              class="md-header__button md-icon"
+              title="Switch to dark mode"
+              for="__palette_2"
+              hidden
+            >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18V6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-2.69L23.31 12 20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69Z"/></svg>
             </label>
           
         
           
-          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          <input
+            class="md-option"
+            data-md-color-media=""
+            data-md-color-scheme="slate"
+            data-md-color-primary=""
+            data-md-color-accent=""
+            
+              aria-label="Switch to light mode"
+            
+            type="radio"
+            name="__palette"
+            id="__palette_2"
+          />
           
-            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+            <label
+              class="md-header__button md-icon"
+              title="Switch to light mode"
+              for="__palette_1"
+              hidden
+            >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18V6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-2.69L23.31 12 20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69Z"/></svg>
             </label>
           
         
       </form>
     
+
+    <!-- Site language selector -->
     
+
+    <!-- Button to open search modal -->
     
       <label class="md-header__button md-icon" for="__search">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
       </label>
+
+      <!-- Search interface -->
       <div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
@@ -167,6 +274,8 @@
   </div>
 </div>
     
+
+    <!-- Repository information -->
     
       <div class="md-header__source">
         <a href="https://github.com/openxla/xla" title="Go to repository" class="md-source" data-md-component="source">
@@ -181,6 +290,8 @@
       </div>
     
   </nav>
+
+  <!-- Navigation tabs (sticky) -->
   
 </header>
     
@@ -261,9 +372,32 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="XLA" class="md-nav__button md-logo" aria-label="XLA" data-md-component="logo">
-      
-  <img src="../website/assets/openxla-logo-lockup-white.svg" alt="logo">
+    <a href="https://scottamain.github.io/community" title="XLA" class="md-nav__button md-logo" aria-label="XLA" data-md-component="logo">
+      <!--
+  Copyright (c) 2016-2022 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+<!-- Logo (customized to provide img alt text) -->
+
+  <img src="../website/assets/openxla-logo-lockup-white.svg" alt="OpenXLA" />
 
     </a>
     XLA
@@ -689,14 +823,14 @@ addition, XLA needs to "broadcast" the vector <code>v</code> to the same rank as
 matrix <code>X</code>, by replicating <code>v</code> a certain number of times. The vector's length
 has to match at least one of the dimensions of the matrix.</p>
 <p>For example:</p>
-<div class="highlight"><pre><span></span><code>|1 2 3| + |7 8 9|
+<pre class="highlight"><code>|1 2 3| + |7 8 9|
 |4 5 6|
-</code></pre></div>
+</code></pre>
 <p>The matrix's dimensions are (2,3), the vector's are (3). The vector is broadcast
 by replicating it over rows to get:</p>
-<div class="highlight"><pre><span></span><code>|1 2 3| + |7 8 9| = |8  10 12|
+<pre class="highlight"><code>|1 2 3| + |7 8 9| = |8  10 12|
 |4 5 6|   |7 8 9|   |11 13 15|
-</code></pre></div>
+</code></pre>
 <p>In Numpy, this is called
 <a href="http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html">broadcasting</a>.</p>
 <h2 id="principles">Principles<a class="headerlink" href="#principles" title="Permanent link">link</a></h2>
@@ -715,9 +849,9 @@ and an array means applying the operation with the scalar for each element in
 the array. For example, adding a scalar to a matrix means producing a matrix
 each element of which is a sum of the scalar with the corresponding input
 matrix's element.</p>
-<div class="highlight"><pre><span></span><code>|1 2 3| + 7 = |8  9  10|
+<pre class="highlight"><code>|1 2 3| + 7 = |8  9  10|
 |4 5 6|       |11 12 13|
-</code></pre></div>
+</code></pre>
 <p>Most broadcasting needs can be captured by using a tuple of dimensions on a
 binary operation. When the inputs to the operation have different ranks, this
 broadcasting tuple specifies which dimension(s) in the <strong>higher-rank</strong> array to
@@ -729,24 +863,24 @@ addition, specify the broadcasting dimension to be (1), meaning the vector's
 dimension is matched to dimension 1 of the matrix. In 2D, if dimension 0 is
 considered as rows and dimension 1 as columns, this means that each element of
 the vector becomes a column of a size matching the number of rows in the matrix:</p>
-<div class="highlight"><pre><span></span><code>|7 8 9| ==&gt; |7 8 9|
+<pre class="highlight"><code>|7 8 9| ==&gt; |7 8 9|
             |7 8 9|
-</code></pre></div>
+</code></pre>
 <p>As a more complex example, consider adding a 3-element vector (dimension (3)) to
 a 3x3 matrix (dimensions (3,3)). There are two ways broadcasting can happen for
 this example:</p>
 <p>(1) A broadcasting dimension of 1 can be used. Each vector element becomes a
 column and the vector is duplicated for each row in the matrix.</p>
-<div class="highlight"><pre><span></span><code>|7 8 9| ==&gt; |7 8 9|
+<pre class="highlight"><code>|7 8 9| ==&gt; |7 8 9|
             |7 8 9|
             |7 8 9|
-</code></pre></div>
+</code></pre>
 <p>(2) A broadcasting dimension of 0 can be used. Each vector element becomes a row
 and the vector is duplicated for each column in the matrix.</p>
-<div class="highlight"><pre><span></span><code> |7| ==&gt; |7 7 7|
+<pre class="highlight"><code> |7| ==&gt; |7 7 7|
  |8|     |8 8 8|
  |9|     |9 9 9|
-</code></pre></div>
+</code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>When adding a 2x3 matrix to a 3-element vector, a broadcasting dimension
@@ -766,24 +900,24 @@ broadcasting.</p>
 array, by specifying which dimensions of the higher-rank array to match. For
 example, for an array with dimensions MxNxPxQ, a vector with dimension T can be
 matched as follows:</p>
-<div class="highlight"><pre><span></span><code>          MxNxPxQ
+<pre class="highlight"><code>          MxNxPxQ
 
 dim 3:          T
 dim 2:        T
 dim 1:      T
 dim 0:    T
-</code></pre></div>
+</code></pre>
 <p>In each case, T has to be equal to the matching dimension of the higher-rank
 array. The vector's values are then broadcast from the matched dimension to all
 the other dimensions.</p>
 <p>To match a TxV matrix onto the MxNxPxQ array, a pair of broadcasting dimensions
 are used:</p>
-<div class="highlight"><pre><span></span><code>          MxNxPxQ
+<pre class="highlight"><code>          MxNxPxQ
 dim 2,3:      T V
 dim 1,2:    T V
 dim 0,3:  T     V
 etc...
-</code></pre></div>
+</code></pre>
 <p>The order of dimensions in the broadcasting tuple has to be the order in which
 the lower-rank array's dimensions are expected to match the higher-rank array's
 dimensions. The first element in the tuple says which dimension in the
@@ -819,26 +953,26 @@ consult the
 using degenerate dimensions can both be performed in the same binary operation.
 For example, a vector of size 4 and a matrix of size 1x2 can be added together
 using broadcast dimensions value of (0):</p>
-<div class="highlight"><pre><span></span><code>|1 2 3 4| + [5 6]    // [5 6] is a 1x2 matrix, not a vector.
-</code></pre></div>
+<pre class="highlight"><code>|1 2 3 4| + [5 6]    // [5 6] is a 1x2 matrix, not a vector.
+</code></pre>
 <p>First the vector is broadcast up to rank 2 (matrix) using the broadcast
 dimensions. The single value (0) in the broadcast dimensions indicates that
 dimension zero of the vector matches to dimension zero of the matrix. This
 produces a matrix of size 4xM where the value M is chosen to match the
 corresponding dimension size in the 1x2 array. Therefore, a 4x2 matrix is
 produced:</p>
-<div class="highlight"><pre><span></span><code>|1 1| + [5 6]
+<pre class="highlight"><code>|1 1| + [5 6]
 |2 2|
 |3 3|
 |4 4|
-</code></pre></div>
+</code></pre>
 <p>Then "degenerate dimension broadcasting" broadcasts dimension zero of the 1x2
 matrix to match the corresponding dimension size of the right hand side:</p>
-<div class="highlight"><pre><span></span><code>|1 1| + |5 6|     |6  7|
+<pre class="highlight"><code>|1 1| + |5 6|     |6  7|
 |2 2| + |5 6|  =  |7  8|
 |3 3| + |5 6|     |8  9|
 |4 4| + |5 6|     |9 10|
-</code></pre></div>
+</code></pre>
 <p>A more complicated example is a matrix of size 1x2 added to an array of size
 4x3x1 using broadcast dimensions of (1, 2). First the 1x2 matrix is broadcast up
 to rank 3 using the broadcast dimensions to produces an intermediate Mx1x2 array
@@ -854,7 +988,7 @@ degenerate dimensions to produce a 4x3x2 array result.</p>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 9, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 11, 2023</span>
       
         <br>
         Created:
@@ -913,6 +1047,10 @@ degenerate dimensions to produce a 4x3x2 array result.</p>
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../website/javascript/highlight.min.js"></script>
+      
+        <script src="../website/javascript/highlight-mlir.js"></script>
       
     
   </body>
