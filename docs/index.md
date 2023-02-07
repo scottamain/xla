@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # XLA
 
 XLA is an open source, state-of-art compiler for machine learning that

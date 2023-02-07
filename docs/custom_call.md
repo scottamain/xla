@@ -11,7 +11,7 @@ XLA program.
     XLA yourself when something goes wrong, and you should expect relatively
     less assistance from XLA developers if you run into trouble.
 
-!!! Warning
+!!! Caution
     The custom-call API/ABI is not currently stable. We don't intend to
     change it capriciously, but it may change. Some possible future changes are
     described below.
@@ -173,10 +173,10 @@ xla::CustomCall(&b, "do_custom_call", /*operands=*/{param0, param1},
 ```
 
 !!! Note
-  In the future all clients will be required to migrate their custom call
-  functions to the new API version and the old one will be deprecated. For
-  custom calls that can't fail, you can simply add the new
-  `XlaCustomCallStatus*` parameter and then ignore it.
+    In the future, all clients will be required to migrate their custom call
+    functions to the new API version and the old one will be deprecated. For
+    custom calls that can't fail, you can simply add the new
+    `XlaCustomCallStatus*` parameter and then ignore it.
 
 On failure, none of the custom call outputs will be used; the XLA runtime will
 terminate the computation. It is not possible for an HLO computation to recover

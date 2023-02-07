@@ -1,6 +1,6 @@
 # Tiled layout
 
-!!! Warning
+!!! Caution
     Tiled layout is *pre-release* and this describes how it's intended to
     work. Errors may be silently ignored.
 

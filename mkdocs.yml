@@ -81,5 +81,3 @@ nav:
     - Shapes and layout: shapes.md
     - Tiled layout: tiled_layout.md
     - Operation semantics: operation_semantics.md
-  - Community:
-    - Code reviews: code_reviews_guide.md
