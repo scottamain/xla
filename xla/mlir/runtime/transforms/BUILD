@@ -2,6 +2,7 @@ load("//xla:xla.bzl", "xla_cc_test")
 load("@tsl//tsl/platform:rules_cc.bzl", "cc_library")
 load("@tsl//tsl:tsl.default.bzl", "get_compatible_with_cloud")
 load("@llvm-project//mlir:tblgen.bzl", "gentbl_cc_library")
+load("@tsl//tsl/platform:build_config.bzl", "if_llvm_system_z_available")
 
 package(
     # copybara:uncomment default_applicable_licenses = ["//third_party/tensorflow:license"],
@@ -132,6 +133,7 @@ cc_library(
         "@llvm-project//mlir:ReconcileUnrealizedCasts",
         "@llvm-project//mlir:SCFDialect",
         "@llvm-project//mlir:SCFToControlFlow",
+        "@llvm-project//mlir:SparseTensorDialect",
         "@llvm-project//mlir:Transforms",
         "@llvm-project//mlir:VectorToLLVM",
         "@llvm-project//mlir:X86VectorToLLVMIRTranslation",
@@ -231,7 +233,22 @@ cc_library(
         "@llvm-project//mlir:Parser",
         "@llvm-project//mlir:Pass",
         "@llvm-project//mlir:ToLLVMIRTranslation",
-    ],
+    ] + select({
+        "@tsl//tsl:arm_any": [
+            "@llvm-project//llvm:AArch64AsmParser",
+        ],
+        "@tsl//tsl:linux_ppc64le": [
+            "@llvm-project//llvm:PowerPCAsmParser",
+        ],
+        "@tsl//tsl:macos_arm64": [
+            "@llvm-project//llvm:AArch64AsmParser",
+        ],
+        "//conditions:default": [
+            "@llvm-project//llvm:X86AsmParser",
+        ],
+    }) + if_llvm_system_z_available([
+        "@llvm-project//llvm:SystemZAsmParser",
+    ]),
 )
 
 cc_library(

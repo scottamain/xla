@@ -23,11 +23,10 @@ limitations under the License.
 #include "xla/stream_executor/cuda/cuda_platform_id.h"
 #include "xla/stream_executor/cuda/cuda_stream.h"
 #include "xla/stream_executor/device_memory.h"
-#include "xla/stream_executor/lib/env.h"
-#include "xla/stream_executor/lib/initialize.h"
-#include "xla/stream_executor/lib/status.h"
+#include "xla/stream_executor/platform/initialize.h"
 #include "xla/stream_executor/platform/logging.h"
 #include "xla/stream_executor/rng.h"
+#include "tsl/platform/status.h"
 // clang-format off
 #include "third_party/gpus/cuda/include/curand.h"
 // clang-format on

@@ -44,11 +44,10 @@ cc_library(
         "//xla/stream_executor:executor_cache",
         "//xla/stream_executor:multi_platform_manager",
         "//xla/stream_executor:stream_executor_headers",
-        "//xla/stream_executor/lib",
         "//xla/stream_executor/platform",
-        "@com_google_absl//absl/base:core_headers",
         "@com_google_absl//absl/memory",
         "@com_google_absl//absl/strings:str_format",
+        "@tsl//tsl/platform:errors",
     ],
     alwayslink = True,  # Registers itself with the MultiPlatformManager.
 )
@@ -63,9 +62,10 @@ cc_library(
     ],
     deps = [
         "//xla/stream_executor:kernel",
-        "//xla/stream_executor/lib",
+        "@com_google_absl//absl/functional:any_invocable",
         "@com_google_absl//absl/synchronization",
         "@tsl//tsl/platform:denormal",
+        "@tsl//tsl/platform:env",
         "@tsl//tsl/platform:setround",
     ],
 )
@@ -102,11 +102,11 @@ cc_library(
         "//xla/stream_executor:kernel",
         "//xla/stream_executor:rng",
         "//xla/stream_executor:stream_executor_internal",
-        "//xla/stream_executor:stream_executor_pimpl",
-        "//xla/stream_executor:timer",
-        "//xla/stream_executor/lib",
+        "//xla/stream_executor:stream_executor_pimpl",  # fixdeps: keep
+        "@com_google_absl//absl/functional:any_invocable",
         "@com_google_absl//absl/strings",
         "@com_google_absl//absl/synchronization",
+        "@tsl//tsl/platform:errors",
         "@tsl//tsl/platform:platform_port",
         "@tsl//tsl/platform/profile_utils:profile_utils_cpu_utils",
     ],

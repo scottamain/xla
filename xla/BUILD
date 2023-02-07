@@ -99,7 +99,6 @@ tf_proto_library(
         "//xla/service:hlo_proto",
     ],
     visibility = ["//visibility:public"],
-    deps = ["//google/protobuf:any"],
 )
 
 cc_library(
@@ -174,6 +173,18 @@ cc_library(
         ":debug_options_flags",
         ":xla_proto_cc",
     ],
+)
+
+cc_library(
+    name = "frontend_attributes",
+    srcs = [
+        "frontend_attributes.cc",
+    ],
+    hdrs = [
+        "frontend_attributes.h",
+    ],
+    visibility = [":friends"],
+    deps = ["//xla/hlo/ir:hlo"],
 )
 
 cc_library(
@@ -261,7 +272,7 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         ":status",
-        "//xla/stream_executor/lib",
+        "@tsl//tsl/platform:statusor",
     ],
 )
 
@@ -387,6 +398,7 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         ":permutation_util",
+        ":printer",
         ":status",
         ":status_macros",
         ":statusor",
@@ -399,6 +411,7 @@ cc_library(
         "@com_google_absl//absl/container:inlined_vector",
         "@com_google_absl//absl/functional:function_ref",
         "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/synchronization",
         "@com_google_absl//absl/types:span",
         "@tsl//tsl/platform:env",
         "@tsl//tsl/platform:float8",
@@ -452,6 +465,7 @@ xla_cc_test(
         ":util",
         ":xla_data_proto_cc",
         "@com_google_absl//absl/strings",
+        "@tsl//tsl/platform:env",
         "@tsl//tsl/platform:protobuf",
         "@tsl//tsl/platform:test_benchmark",
         "@tsl//tsl/platform:test_main",
@@ -518,6 +532,7 @@ cc_library(
         ":array3d",
         ":array4d",
         ":permutation_util",
+        ":printer",
         ":shape_util",
         ":status_macros",
         ":types",
@@ -525,7 +540,6 @@ cc_library(
         ":xla_data_proto_cc",
         "@com_google_absl//absl/base",
         "@com_google_absl//absl/functional:function_ref",
-        "@com_google_absl//absl/hash",
         "@com_google_absl//absl/strings",
         "@com_google_absl//absl/strings:str_format",
         "@com_google_absl//absl/types:span",
@@ -602,6 +616,7 @@ cc_library(
         ":error_spec",
         ":literal",
         ":literal_util",
+        ":shape_util",
         ":util",
         "@com_google_absl//absl/base",
         "@com_google_absl//absl/strings",
@@ -887,6 +902,7 @@ cc_library(
     hdrs = ["shape_layout.h"],
     visibility = ["//visibility:public"],
     deps = [
+        ":printer",
         ":shape_util",
         ":types",
         ":util",
@@ -1124,6 +1140,17 @@ cc_library(
         "//xla/service/gpu:gemm_algorithm_picker",
         "//xla/service/gpu:gpu_conv_algorithm_picker",
     ]),
+)
+
+cc_library(
+    name = "printer",
+    srcs = ["printer.cc"],
+    hdrs = ["printer.h"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/strings:cord",
+    ],
 )
 
 filegroup(

@@ -68,7 +68,9 @@ cc_library(
     hdrs = ["eigen_contraction_kernel.h"],
     defines = select({
         "//tsl:android_x86": [],
-        "//tsl:arm_any": [],
+        "//tsl:arm_any": [
+            "TENSORFLOW_USE_CUSTOM_CONTRACTION_KERNEL",
+        ],
         "//tsl:fuchsia_x86_64": [],
         "//tsl:ios": [],
         "//tsl:linux_ppc64le": [],
@@ -81,7 +83,7 @@ cc_library(
     }),
     deps = [
         "@com_google_absl//absl/base",
-        "@org_tensorflow//third_party/eigen3",
+        "@xla//third_party/eigen3",
         "//tsl/platform:dynamic_annotations",
         "//tsl/framework/fixedpoint",
     ] + select({
@@ -119,7 +121,7 @@ cc_library(
         "//tsl/framework/fixedpoint",
         "//tsl/platform:dynamic_annotations",
         "@com_google_absl//absl/base",
-        "@org_tensorflow//third_party/eigen3",
+        "@xla//third_party/eigen3",
     ],
 )
 

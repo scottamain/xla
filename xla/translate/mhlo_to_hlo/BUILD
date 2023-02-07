@@ -79,7 +79,6 @@ cc_library(
         "//xla/mlir_hlo:mhlo_passes",
         "//xla/service:hlo_parser",
         "//xla/service/gpu:backend_configs_cc",
-        "//xla/stream_executor/lib",
         "@com_google_absl//absl/types:span",
         "@llvm-project//llvm:Support",
         "@llvm-project//mlir:Analysis",
@@ -94,6 +93,7 @@ cc_library(
         "@llvm-project//mlir:Transforms",
         "@stablehlo//:stablehlo_ops",
         "@tsl//tsl/platform:float8",
+        "@tsl//tsl/platform:statusor",
     ],
 )
 

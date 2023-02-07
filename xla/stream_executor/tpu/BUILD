@@ -1,7 +1,6 @@
 # Description: StreamExecutor Interface for TPUs
 
 load("@tsl//tsl/platform:rules_cc.bzl", "cc_library")
-load("//xla:xla.bzl", "xla_cc_test")
 
 package(
     # copybara:uncomment default_applicable_licenses = ["//third_party/tensorflow:license"],
@@ -21,21 +20,6 @@ package(
         "//xla/backends/profiler/tpu:__subpackages__",
     ],
     licenses = ["notice"],
-)
-
-cc_library(
-    name = "pjrt_api",
-    srcs = ["pjrt_api.cc"],
-    hdrs = ["pjrt_api.h"],
-    deps = [
-        "//xla:status",
-        "//xla:statusor",
-        "//xla/pjrt/c:pjrt_c_api_hdrs",
-        "//xla/pjrt/c:pjrt_c_api_helpers",
-        "@com_google_absl//absl/container:flat_hash_map",
-        "@com_google_absl//absl/strings",
-        "@tsl//tsl/platform:errors",
-    ],
 )
 
 cc_library(
@@ -169,11 +153,13 @@ cc_library(
         ":tpu_platform_interface",
         ":tpu_stream_interface",
         "//xla/stream_executor",
-        "//xla/stream_executor/lib",
         "//xla/stream_executor/platform",
         "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/functional:any_invocable",
         "@com_google_absl//absl/synchronization",
         "@tsl//tsl/platform:casts",
+        "@tsl//tsl/platform:status",
+        "@tsl//tsl/platform:statusor",
         "@tsl//tsl/platform:types",
     ],
     alwayslink = True,
@@ -217,10 +203,12 @@ cc_library(
         ":tpu_executor_c_api_hdrs",
         ":tpu_topology_external",
         "//xla/stream_executor:stream_executor_headers",
-        "//xla/stream_executor/lib",
         "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/functional:any_invocable",
         "@com_google_absl//absl/synchronization",
         "@tsl//tsl/platform:casts",
+        "@tsl//tsl/platform:status",
+        "@tsl//tsl/platform:statusor",
         "@tsl//tsl/platform:types",
     ],
 )
@@ -257,13 +245,15 @@ cc_library(
         ":tpu_stream_interface",
         "//xla:status",
         "//xla/stream_executor",
-        "//xla/stream_executor/lib",
         "@com_google_absl//absl/cleanup",
         "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/functional:any_invocable",
         "@com_google_absl//absl/synchronization",
         "@tsl//tsl/c:tsl_status",
         "@tsl//tsl/c:tsl_status_helper",
         "@tsl//tsl/platform:casts",
+        "@tsl//tsl/platform:status",
+        "@tsl//tsl/platform:statusor",
         "@tsl//tsl/platform:types",
     ],
 )
@@ -288,9 +278,10 @@ cc_library(
         "//xla/service:stream_pool",
         "//xla/service:transfer_manager",
         "//xla/stream_executor:device_memory_allocator",
-        "//xla/stream_executor/lib",
         "@com_google_absl//absl/memory",
         "@tsl//tsl/platform:macros",
+        "@tsl//tsl/platform:status",
+        "@tsl//tsl/platform:statusor",
     ],
 )
 
@@ -408,7 +399,7 @@ cc_library(
         ":tpu_platform_interface",
         ":tpu_topology_external",
         "//xla/stream_executor:stream_executor_headers",
-        "//xla/stream_executor/lib",
+        "@tsl//tsl/platform:statusor",
     ],
 )
 
@@ -427,12 +418,13 @@ cc_library(
         ":tpu_executor_c_api_hdrs",
         ":tpu_library_init_fns",
         ":tpu_ops_c_api_hdrs",
-        "//xla/stream_executor/lib",
         "@com_google_absl//absl/strings",
         "@com_google_absl//absl/synchronization",
         "@tsl//tsl/platform:env",
         "@tsl//tsl/platform:errors",
         "@tsl//tsl/platform:logging",
+        "@tsl//tsl/platform:status",
+        "@tsl//tsl/platform:statusor",
         "@tsl//tsl/platform/cloud:gcs_file_system",
     ],
 )
@@ -536,17 +528,5 @@ cc_library(
         ":c_api_decl",
         ":tpu_api",
         "@tsl//tsl/platform:types",
-    ],
-)
-
-xla_cc_test(
-    name = "pjrt_api_test",
-    srcs = ["pjrt_api_test.cc"],
-    deps = [
-        ":pjrt_api",
-        "@com_google_googletest//:gtest_main",
-        "@tsl//tsl/lib/core:status_test_util",
-        "@tsl//tsl/platform:status_matchers",
-        "@tsl//tsl/protobuf:error_codes_proto_impl_cc",
     ],
 )

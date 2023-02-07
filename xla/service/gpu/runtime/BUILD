@@ -148,16 +148,22 @@ cc_library(
     hdrs = ["gemm.h"],
     deps = [
         ":support",
+        "@com_google_absl//absl/container:node_hash_map",
+        "//xla:status",
         "//xla:xla_proto_cc",
         "//xla/runtime:custom_call",
         "//xla/runtime:custom_call_registry",
         "//xla/runtime:executable",
-        "//xla/runtime:logical_result",
         "//xla/runtime:state",
         "//xla/service:executable",
+        "//xla/service:hlo_module_config",
         "//xla/service/gpu:matmul_utils",
-        "@com_google_absl//absl/container:node_hash_map",
-    ],
+        "//xla/stream_executor:blas",
+        "//xla/stream_executor:device_memory",
+    ] + if_cuda_is_configured([
+        "//xla/service/gpu:gemm_algorithm_picker",
+        "//xla/stream_executor/gpu:redzone_allocator",
+    ]),
 )
 
 cc_library(
@@ -165,21 +171,20 @@ cc_library(
     srcs = ["graph_launch.cc"],
     hdrs = ["graph_launch.h"],
     deps = [
+        ":conv",
         ":kernel_launch",
         ":support",
+        "@com_google_absl//absl/container:node_hash_map",
+        "@com_google_absl//absl/synchronization",
         "//xla:types",
         "//xla/runtime:custom_call",
         "//xla/runtime:custom_call_registry",
         "//xla/runtime:executable",
         "//xla/service:executable",
-        "//xla/service/gpu:launch_dimensions",
-        "//xla/service/gpu:stream_executor_util",
         "//xla/stream_executor",
-        "//xla/stream_executor/gpu:gpu_stream",
-        "@com_google_absl//absl/container:flat_hash_map",
-        "@com_google_absl//absl/synchronization",
-        "@local_config_cuda//cuda:cuda_headers",
-    ],
+    ] + if_cuda_is_configured([
+        "//xla/stream_executor/cuda:cuda_graph",
+    ]),
 )
 
 cc_library(
@@ -291,9 +296,15 @@ cc_library(
         "//xla/runtime:custom_call_registry",
         "//xla/runtime:executable",
         "//xla/service:executable",
+        "//xla/stream_executor:event",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/strings:str_format",
+        "@com_google_absl//absl/synchronization",
+        "@tf_runtime//:async_value",
+        "@tsl//tsl/profiler/lib:traceme",
+        "@tsl//tsl/profiler/lib:traceme_encode",
     ],
 )
 

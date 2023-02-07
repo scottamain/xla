@@ -39,10 +39,10 @@ limitations under the License.
 #include "xla/stream_executor/device_description.pb.h"
 #include "xla/stream_executor/device_memory.h"
 #include "xla/stream_executor/dnn.pb.h"
-#include "xla/stream_executor/lib/status.h"
-#include "xla/stream_executor/lib/statusor.h"
 #include "xla/stream_executor/platform/logging.h"
 #include "xla/stream_executor/platform/port.h"
+#include "tsl/platform/status.h"
+#include "tsl/platform/statusor.h"
 
 namespace Eigen {
 struct half;
@@ -1143,7 +1143,7 @@ class DnnSupport {
 
   // Gets the version of the backing library, as a VersionInfo object.
   virtual tsl::StatusOr<VersionInfo> GetVersion() {
-    return port::UnimplementedError(
+    return tsl::errors::Unimplemented(
         "DnnSupport::GetVersion not implemented on this platform.");
   }
 
@@ -1370,7 +1370,7 @@ class DnnSupport {
       DeviceMemoryBase output_data, ScratchAllocator* scratch_allocator,
       const dnn::AlgorithmConfig& algorithm_config,
       dnn::ProfileResult* output_profile_result) {
-    return port::UnimplementedError(
+    return tsl::errors::Unimplemented(
         "DnnSupport::DoFusedConvolve not implemented on this platform.");
   }
 
@@ -2107,7 +2107,7 @@ class DnnSupport {
                       const dnn::AlgorithmConfig& algorithm_config,
                       float dropout, uint64_t seed,
                       ScratchAllocator* state_allocator, bool use_padded_io) {
-    return tsl::Status(port::error::UNIMPLEMENTED,
+    return tsl::Status(tsl::error::UNIMPLEMENTED,
                        "createRnnDescriptor is unimplemented");
   }
 
@@ -2123,7 +2123,7 @@ class DnnSupport {
   virtual tsl::StatusOr<std::unique_ptr<dnn::RnnSequenceTensorDescriptor>>
   createRnnSequenceTensorDescriptor(int max_seq_length, int batch_size,
                                     int data_size, dnn::DataType data_type) {
-    return tsl::Status(port::error::UNIMPLEMENTED,
+    return tsl::Status(tsl::error::UNIMPLEMENTED,
                        "createRnnSequenceTensorDescriptor is unimplemented");
   }
 
@@ -2132,7 +2132,7 @@ class DnnSupport {
                                     int data_size,
                                     const absl::Span<const int>& seq_lengths,
                                     bool time_major, dnn::DataType data_type) {
-    return tsl::Status(port::error::UNIMPLEMENTED,
+    return tsl::Status(tsl::error::UNIMPLEMENTED,
                        "createRnnSequenceTensorDescriptor is unimplemented");
   }
 
@@ -2141,7 +2141,7 @@ class DnnSupport {
   virtual tsl::StatusOr<std::unique_ptr<dnn::RnnStateTensorDescriptor>>
   createRnnStateTensorDescriptor(int num_layer, int batch_size, int data_size,
                                  dnn::DataType data_type) {
-    return tsl::Status(port::error::UNIMPLEMENTED,
+    return tsl::Status(tsl::error::UNIMPLEMENTED,
                        "createRnnStateTensorDescriptor is unimplemented");
   }
 

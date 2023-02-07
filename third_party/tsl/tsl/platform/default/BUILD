@@ -159,7 +159,7 @@ cc_library(
         "//tsl/protobuf:error_codes_proto_impl_cc",
         "@com_google_absl//absl/time",
         "@com_google_absl//absl/types:optional",
-        "@org_tensorflow//third_party/eigen3",
+        "@xla//third_party/eigen3",
     ],
 )
 
@@ -386,6 +386,7 @@ cc_library(
     deps = [
         "//tsl/platform:logging",
         "//tsl/platform:path",
+        "//tsl/platform:test",
         "@bazel_tools//tools/cpp/runfiles",
     ],
 )
@@ -545,6 +546,24 @@ cc_library(
     ],
 )
 
+cc_library(
+    name = "status",
+    tags = [
+        "manual",
+        "no_oss",
+        "nobuilder",
+    ],
+    textual_hdrs = ["status.h"],
+    visibility = ["//third_party/tensorflow:__subpackages__"],
+    deps = [
+        "//tsl/platform:types",
+        "//tsl/protobuf:error_codes_proto_impl_cc",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
 bzl_library(
     name = "cuda_build_defs_bzl",
     srcs = ["cuda_build_defs.bzl"],
@@ -575,6 +594,7 @@ filegroup(
         "posix_file_system.cc",
         "posix_file_system.h",
         "stacktrace.h",
+        "status.h",
         "tracing_impl.h",
         "//tsl/platform/profile_utils:cpu_utils.h",
         "//tsl/platform/profile_utils:i_cpu_utils_helper.h",

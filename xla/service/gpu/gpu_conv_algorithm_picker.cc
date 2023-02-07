@@ -40,6 +40,7 @@ limitations under the License.
 #include "xla/service/gpu/ir_emission_utils.h"
 #include "xla/service/gpu/stream_executor_util.h"
 #include "xla/status_macros.h"
+#include "xla/stream_executor/dnn.pb.h"
 #include "xla/stream_executor/scratch_allocator.h"
 #include "xla/stream_executor/stream.h"
 #include "xla/stream_executor/stream_executor_pimpl.h"
@@ -47,7 +48,6 @@ limitations under the License.
 #include "xla/xla_data.pb.h"
 #include "tsl/platform/logger.h"
 #include "tsl/platform/numbers.h"
-#include "tsl/protobuf/dnn.pb.h"
 #include "tsl/util/env_var.h"
 #include "tsl/util/proto/proto_utils.h"
 
@@ -98,7 +98,7 @@ StatusOr<se::DeviceMemory<uint8_t>> ScratchAllocator::AllocateBytes(
   CHECK_GE(byte_size, 0) << "byte_size must be positive.";
   if (byte_size > GetMemoryLimitInBytes()) {
     return Status(
-        se::port::error::RESOURCE_EXHAUSTED,
+        tsl::error::RESOURCE_EXHAUSTED,
         absl::StrFormat(
             "Allocating %d bytes exceeds the memory limit of %d bytes.",
             byte_size, GetMemoryLimitInBytes()));
@@ -148,7 +148,7 @@ StatusOr<std::vector<MaybeFusedConvRunner>> GetAlgorithms(
           /* conv_input_scale = */ config.conv_result_scale,
           /* side_input_scale = */ config.fusion->side_input_scale,
           /* leakyrelu_alpha = */ 0.0, stream, config.input_descriptor,
-          config.filter_descriptor, GetBiasDescriptor(config),
+          config.filter_descriptor, config.bias_descriptor,
           config.output_descriptor, config.conv_desc, use_fallback,
           config.fusion->mode, &runners));
       for (auto& runner : runners) {
@@ -386,7 +386,7 @@ StatusOr<AutotuneResult> GpuConvAlgorithmPicker::PickBestAlgorithm(
     const HloCustomCallInstruction* instr) {
   // If in deviceless mode, return the result from the autotune_cache.
   if (auto deviceless_config = std::get_if<DevicelessConfig>(&config_)) {
-    auto device_description_str = deviceless_config->device_description_str;
+    auto device_description_str = deviceless_config->model_str;
     ConvCacheKey key =
         AutotuneCacheKeyfromInstruction(instr, device_description_str);
     absl::MutexLock autotune_lock(&autotune_cache_mu);
@@ -880,7 +880,8 @@ GpuConvAlgorithmPicker::PickBestAlgorithmNoCacheCuda(
   }
 
   TF_ASSIGN_OR_RETURN(AutotuneResult selected_algorithm,
-                      PickBestResult(profile_results, *instr));
+                      PickBestResult(profile_results, instr->ToString(),
+                                     instr->GetModule()->config()));
   return selected_algorithm;
 }
 #endif
@@ -996,7 +997,8 @@ GpuConvAlgorithmPicker::PickBestAlgorithmNoCacheRocm(
   }
 
   TF_ASSIGN_OR_RETURN(AutotuneResult selected_algorithm,
-                      PickBestResult(profile_results, *instr));
+                      PickBestResult(profile_results, instr->ToString(),
+                                     instr->GetModule()->config()));
   return selected_algorithm;
 }
 

@@ -21,10 +21,10 @@ limitations under the License.
 #include "absl/strings/str_format.h"
 #include "xla/backends/interpreter/executor.h"
 #include "xla/stream_executor/device_options.h"
-#include "xla/stream_executor/lib/initialize.h"
-#include "xla/stream_executor/lib/status.h"
 #include "xla/stream_executor/multi_platform_manager.h"
 #include "xla/stream_executor/platform.h"
+#include "xla/stream_executor/platform/initialize.h"
+#include "tsl/platform/status.h"
 
 namespace stream_executor {
 namespace interpreter {
@@ -80,7 +80,7 @@ XlaInterpreterPlatform::GetUncachedExecutor(
   auto init_status = executor->Init(config.device_options);
   if (!init_status.ok()) {
     return tsl::Status{
-        port::error::INTERNAL,
+        tsl::error::INTERNAL,
         absl::StrFormat(
             "failed initializing StreamExecutor for device ordinal %d: %s",
             config.ordinal, init_status.ToString())};
@@ -100,7 +100,7 @@ void XlaInterpreterPlatform::UnregisterTraceListener(TraceListener* listener) {
 
 static void InitializeXlaInterpreterPlatform() {
   std::unique_ptr<Platform> platform(new XlaInterpreterPlatform);
-  SE_CHECK_OK(MultiPlatformManager::RegisterPlatform(std::move(platform)));
+  TF_CHECK_OK(MultiPlatformManager::RegisterPlatform(std::move(platform)));
 }
 
 }  // namespace interpreter

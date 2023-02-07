@@ -112,13 +112,29 @@ xla_cc_binary(
     ],
 )
 
+xla_cc_test(
+    name = "replay_computation_bin_test",
+    srcs = ["replay_computation_bin_test.cc"],
+    data = [
+        "data/add.hlo",
+        ":replay_computation_cpu",
+        ":replay_computation_interpreter",
+    ],
+    deps = [
+        "@tsl//tsl/platform:path",
+        "@tsl//tsl/platform:subprocess",
+        "@tsl//tsl/platform:test",
+        "@tsl//tsl/platform:test_main",
+    ],
+)
+
 xla_cc_binary(
     name = "replay_computation_gpu",
     tags = ["gpu"],
     deps = [
         ":replay_computation_library",
         "//xla/service:gpu_plugin",
-        "//xla/stream_executor/cuda:cublas_plugin",
+        "//xla/stream_executor:cuda_platform",
     ],
 )
 
@@ -251,10 +267,10 @@ cc_library(
     deps = [
         "//xla:status",
         "//xla/hlo/ir:hlo",
+        "//xla/service:compilation_environments",
         "//xla/service:hlo_verifier",
         "@com_google_absl//absl/container:flat_hash_map",
         "@com_google_absl//absl/container:flat_hash_set",
-        "@com_google_absl//absl/memory",
     ],
 )
 
@@ -284,14 +300,24 @@ xla_cc_binary(
     ] + if_cuda_or_rocm([
         "//xla/service:gpu_plugin",
     ]) + if_cuda([
-        "//xla/stream_executor/cuda:cublas_plugin",
+        "//xla/stream_executor:cuda_platform",
     ]),
 )
 
-sh_test(
-    name = "interactive_graphviz_build_only_test",
-    srcs = ["interactive_graphviz_test.sh"],
-    data = [":interactive_graphviz"],
+xla_cc_test(
+    name = "interactive_graphviz_bin_test",
+    srcs = ["interactive_graphviz_bin_test.cc"],
+    data = [
+        "data/add.hlo",
+        ":interactive_graphviz",
+    ],
+    deps = [
+        "@com_google_absl//absl/strings",
+        "@tsl//tsl/platform:path",
+        "@tsl//tsl/platform:subprocess",
+        "@tsl//tsl/platform:test",
+        "@tsl//tsl/platform:test_main",
+    ],
 )
 
 cc_library(
@@ -339,8 +365,8 @@ cc_library(
         "//xla/service:hlo_module_config",
         "//xla/service:hlo_runner_interface",
         "//xla/stream_executor:platform",
-        "//xla/stream_executor/lib",
         "@tsl//tsl/platform:errors",
+        "@tsl//tsl/platform:status",
     ],
 )
 
@@ -412,8 +438,25 @@ xla_cc_binary(
     ] + if_cuda_or_rocm([
         "//xla/service:gpu_plugin",
     ]) + if_cuda([
-        "//xla/stream_executor/cuda:cublas_plugin",
+        "//xla/stream_executor:cuda_platform",
     ]),
+)
+
+xla_cc_test(
+    name = "run_hlo_module_bin_test",
+    srcs = ["run_hlo_module_bin_test.cc"],
+    data = [
+        "data/add.hlo",
+        "data/must_alias.hlo",
+        "data/must_alias_with_sharding.hlo",
+        ":run_hlo_module",
+    ],
+    deps = [
+        "@tsl//tsl/platform:path",
+        "@tsl//tsl/platform:subprocess",
+        "@tsl//tsl/platform:test",
+        "@tsl//tsl/platform:test_main",
+    ],
 )
 
 cc_library(

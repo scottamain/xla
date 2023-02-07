@@ -296,7 +296,7 @@ gentbl_cc_library(
         ),
     ],
     tblgen = "@llvm-project//mlir:mlir-tblgen",
-    td_file = "stablehlo/dialect/VhloOps.td",
+    td_file = "stablehlo/dialect/VhloAttrs.td",
     deps = [
         ":vhlo_ops_td_files",
     ],
@@ -334,7 +334,7 @@ gentbl_cc_library(
         ),
     ],
     tblgen = "@llvm-project//mlir:mlir-tblgen",
-    td_file = "stablehlo/dialect/VhloOps.td",
+    td_file = "stablehlo/dialect/VhloEnums.td",
     deps = [
         ":vhlo_ops_td_files",
     ],
@@ -380,6 +380,7 @@ cc_library(
         ":vhlo_op_interfaces_inc_gen",
         ":vhlo_ops_inc_gen",
         ":vhlo_type_interfaces_inc_gen",
+        ":vhlo_types",
         ":vhlo_types_inc_gen",
         "@llvm-project//llvm:Support",
         "@llvm-project//mlir:IR",
@@ -413,6 +414,7 @@ td_library(
     srcs = [
         "stablehlo/dialect/VhloAttrs.td",
         "stablehlo/dialect/VhloBase.td",
+        "stablehlo/dialect/VhloDialect.td",
         "stablehlo/dialect/VhloEnums.td",
         "stablehlo/dialect/VhloOps.td",
         "stablehlo/dialect/VhloTypes.td",
@@ -422,6 +424,29 @@ td_library(
         "@llvm-project//mlir:BuiltinDialectTdFiles",
         "@llvm-project//mlir:OpBaseTdFiles",
         "@llvm-project//mlir:ShapeOpsTdFiles",
+    ],
+)
+
+cc_library(
+    name = "vhlo_types",
+    srcs = [
+        "stablehlo/dialect/VhloTypes.cpp",
+    ],
+    hdrs = [
+        "stablehlo/dialect/VhloTypes.h",
+    ],
+    includes = ["."],
+    deps = [
+        ":stablehlo_assembly_format",
+        ":version",
+        ":vhlo_type_interfaces_inc_gen",
+        ":vhlo_types_inc_gen",
+        "@llvm-project//llvm:Support",
+        "@llvm-project//mlir:IR",
+        "@llvm-project//mlir:QuantOps",
+        "@llvm-project//mlir:ShapeDialect",
+        "@llvm-project//mlir:Support",
+        "@llvm-project//mlir:Transforms",
     ],
 )
 
@@ -438,7 +463,7 @@ gentbl_cc_library(
         ),
     ],
     tblgen = "@llvm-project//mlir:mlir-tblgen",
-    td_file = "stablehlo/dialect/VhloOps.td",
+    td_file = "stablehlo/dialect/VhloTypes.td",
     deps = [
         ":vhlo_ops_td_files",
     ],
@@ -483,6 +508,7 @@ cc_library(
     name = "stablehlo_passes",
     srcs = [
         "stablehlo/transforms/StablehloLegalizeToVhlo.cpp",
+        "stablehlo/transforms/StablehloRefineShapes.cpp",
         "stablehlo/transforms/VhloLegalizeToStablehlo.cpp",
         "stablehlo/transforms/VhloToVersion.cpp",
     ],
@@ -496,12 +522,20 @@ cc_library(
         ":stablehlo_ops_inc_gen",
         ":stablehlo_pass_inc_gen",
         ":stablehlo_type_conversion",
+        ":stablehlo_type_inference",
         ":version",
         ":vhlo_ops",
+        ":vhlo_types",
         "@llvm-project//llvm:Support",
+        "@llvm-project//mlir:FuncDialect",
         "@llvm-project//mlir:IR",
+        "@llvm-project//mlir:InferTypeOpInterface",
         "@llvm-project//mlir:Pass",
+        "@llvm-project//mlir:QuantOps",
+        "@llvm-project//mlir:ShapeDialect",
         "@llvm-project//mlir:Support",
+        "@llvm-project//mlir:TensorDialect",
+        "@llvm-project//mlir:TransformUtils",
         "@llvm-project//mlir:Transforms",
     ],
 )
@@ -595,9 +629,11 @@ cc_library(
 cc_library(
     name = "reference_tensor",
     srcs = [
+        "stablehlo/reference/Index.cpp",
         "stablehlo/reference/Tensor.cpp",
     ],
     hdrs = [
+        "stablehlo/reference/Index.h",
         "stablehlo/reference/Tensor.h",
     ],
     includes = ["."],
@@ -638,7 +674,10 @@ cc_library(
         ":stablehlo_ops",
         ":vhlo_ops",
         "@llvm-project//mlir:IR",
+        "@llvm-project//mlir:QuantOps",
+        "@llvm-project//mlir:ShapeDialect",
         "@llvm-project//mlir:SparseTensorDialect",
+        "@llvm-project//mlir:TensorDialect",
     ],
 )
 
@@ -855,10 +894,7 @@ cc_library(
         ":stablehlo_type_inference",
         "@llvm-project//llvm:Support",
         "@llvm-project//mlir:ArithDialect",
-        "@llvm-project//mlir:BytecodeReader",
-        "@llvm-project//mlir:BytecodeWriter",
         "@llvm-project//mlir:ComplexDialect",
-        "@llvm-project//mlir:Dialect",
         "@llvm-project//mlir:IR",
         "@llvm-project//mlir:InferTypeOpInterface",
         "@llvm-project//mlir:QuantOps",

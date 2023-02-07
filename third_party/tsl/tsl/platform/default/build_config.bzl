@@ -111,7 +111,7 @@ def pyx_library(
         native.cc_binary(
             name = shared_object_name,
             srcs = [stem + ".cpp"],
-            deps = cc_deps + ["@org_tensorflow//third_party/python_runtime:headers"],
+            deps = cc_deps + ["@xla//third_party/python_runtime:headers"],
             linkshared = 1,
             testonly = testonly,
             copts = copts,
@@ -401,6 +401,13 @@ def py_proto_library(
         # is not explicitly listed in py_libs. Instead, host system is assumed to
         # have grpc installed.
 
+    genproto_deps = []
+    for dep in deps:
+        if dep != "@com_google_protobuf//:protobuf_python":
+            genproto_deps.append(dep + "_genproto")
+        else:
+            genproto_deps.append("@com_google_protobuf//:well_known_types_py_pb2_genproto")
+
     proto_gen(
         name = name + "_genproto",
         srcs = srcs,
@@ -411,7 +418,7 @@ def py_proto_library(
         plugin_language = "grpc",
         protoc = protoc,
         visibility = ["//visibility:public"],
-        deps = [s + "_genproto" for s in deps],
+        deps = genproto_deps,
     )
 
     if default_runtime and not default_runtime in py_libs + deps:
@@ -654,6 +661,7 @@ def tf_additional_lib_hdrs():
         clean_dep("//tsl/platform/default:mutex_data.h"),
         clean_dep("//tsl/platform/default:notification.h"),
         clean_dep("//tsl/platform/default:stacktrace.h"),
+        clean_dep("//tsl/platform/default:status.h"),
         clean_dep("//tsl/platform/default:tracing_impl.h"),
         clean_dep("//tsl/platform/default:unbounded_work_queue.h"),
     ] + select({
@@ -734,7 +742,7 @@ def tf_additional_core_deps():
 def tf_lib_proto_parsing_deps():
     return [
         ":protos_all_cc",
-        clean_dep("@org_tensorflow//third_party/eigen3"),
+        clean_dep("@xla//third_party/eigen3"),
         clean_dep("//tsl/platform/default/build_config:proto_parsing"),
     ]
 
@@ -837,7 +845,7 @@ def tf_resource_deps():
 
 def tf_portable_deps_no_runtime():
     return [
-        "@org_tensorflow//third_party/eigen3",
+        "@xla//third_party/eigen3",
         "@double_conversion//:double-conversion",
         "@nsync//:nsync_cpp",
         "@com_googlesource_code_re2//:re2",

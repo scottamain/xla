@@ -104,9 +104,6 @@ LatencyEstimator::TimeCost ApproximateLatencyEstimator::GetLatencyBetween(
 // Uses the approximate function for NodeCost based on a flag.
 LatencyEstimator::TimeCost ApproximateLatencyEstimator::NodeCost(
     const HloInstruction* instr) const {
-  static constexpr TimeCost kLowCost = 1.0;
-  static constexpr TimeCost kMediumCost = 1000.0;
-  static constexpr TimeCost kHighCost = 5000.0;
   if (instr->IsLoopFusion()) {
     return kMediumCost;
   }
@@ -1266,9 +1263,11 @@ DefaultSchedulerCore::ScheduleComputation(const HloComputation* computation) {
 
   const auto& debug_options = xla::GetDebugOptionsFromFlags();
   if (debug_options.xla_dump_latency_hiding_schedule() &&
-      !absl::StrContains(computation->name(), "region")) {
+      computation->IsEntryComputation()) {
+    int core_freq = latency_estimator_->CyclesPerMicrosecond();
     DumpLatencyHidingSchedule(computation, sched_state.sched_graph,
-                              sched_state.new_sequence_reversed, debug_options);
+                              sched_state.new_sequence_reversed, core_freq,
+                              debug_options);
   }
 
   return std::move(sched_state.new_sequence_reversed);
@@ -1277,9 +1276,10 @@ DefaultSchedulerCore::ScheduleComputation(const HloComputation* computation) {
 void DefaultSchedulerCore::DumpLatencyHidingSchedule(
     const HloComputation* computation, const HloScheduleGraph& schedule_graph,
     const std::vector<HloInstruction*>& instructions,
-    const DebugOptions& debug_options) {
+    const int cycles_per_microsecond, const DebugOptions& debug_options) {
   ScheduleProto proto;
   proto.set_computation_id(computation->unique_id());
+  proto.set_cycles_per_microsecond(cycles_per_microsecond);
 
   const HloGraphNode& first_node = schedule_graph.GetNode(instructions.front());
   const double total_time = first_node.GetReadyTime() + first_node.GetCost();

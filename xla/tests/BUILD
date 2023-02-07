@@ -1259,6 +1259,8 @@ xla_test(
         "//xla/tests:literal_test_util",
         "//xla/tests:xla_internal_test_main",
         "@tsl//tsl/platform:logging",
+        "@tsl//tsl/platform:tensor_float_32_hdr_lib",
+        "@tsl//tsl/platform:tensor_float_32_utils",
         "@tsl//tsl/platform:test",
     ],
 )
@@ -1285,6 +1287,22 @@ xla_test(
         "//xla/tests:xla_internal_test_main",
         "@com_google_absl//absl/memory",
         "@tsl//tsl/platform:logging",
+        "@tsl//tsl/platform:test",
+    ],
+)
+
+xla_test(
+    name = "convolution_cudnn_test",
+    timeout = "long",
+    srcs = ["convolution_cudnn_test.cc"],
+    backend_tags = {"gpu": [
+        "gpu",
+        "requires-gpu-sm70",
+    ]},
+    backends = ["gpu"],
+    deps = [
+        ":hlo_test_base",
+        "//xla/tests:xla_internal_test_main",
         "@tsl//tsl/platform:test",
     ],
 )
@@ -1800,6 +1818,7 @@ xla_test(
 
 xla_test(
     name = "matrix_ops_simple_test",
+    timeout = "long",
     srcs = ["matrix_ops_simple_test.cc"],
     deps = [
         ":test_macros_header",
@@ -2648,8 +2667,9 @@ xla_cc_test(
     name = "literal_test_util_test",
     srcs = ["literal_test_util_test.cc"],
     deps = [
+        ":literal_test_util",
+        "//xla:literal",
         "//xla:test_helpers",
-        "//xla/tests:literal_test_util",
         "@com_google_absl//absl/strings",
         "@tsl//tsl/platform:env",
         "@tsl//tsl/platform:logging",
