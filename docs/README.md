@@ -4,7 +4,7 @@ This directory contains all the documentation for XLA, written in
 Markdown. It also includes `website` files that are used by the MkDocs build,
 which is defined by `mkdocs.yml` in the repo root.
 
-## Stage the website locally
+## Stage and publish the docs
 
 It's easy to preview the rendered docs locally:
 
@@ -32,3 +32,11 @@ It's easy to preview the rendered docs locally:
 4. Open a browser to http://localhost:8000/.
 
 That's it. The web pages automatically reload while you edit the markdown.
+
+When you want to publish the docs to GitHub Pages, use this command:
+
+```bash
+mkdocs gh-deploy --force
+```
+
+Read more about [publishing with mkdocs](https://squidfunk.github.io/mkdocs-material/publishing-your-site/).
